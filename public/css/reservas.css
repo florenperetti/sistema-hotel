@@ -1,0 +1,62 @@
+#reservas div {
+	display: inline-block;
+	background: #DDDDDD;
+	font-size: 1em;
+	line-height: 40px;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+#reservas div.dias, #reservas div.habitaciones,  #reservas div.habitaciones div.habitacion {
+	display: block;
+	width: 100%;
+}
+
+
+#reservas div.dias div, #reservas div.habitaciones div {
+	display: inline-block;
+	float: left;
+	width: 40px; height: 40px;
+}
+
+#reservas div:nth-child(odd), .habitacion:nth-child(odd) {
+	background: #EEEEEE;
+}
+
+#reservas div.habitaciones {
+	position: relative;
+	width: 100%;
+}
+
+div.habitacion div, div.habitacion div.num-hab, div.habitacion div.dia-hab {
+	float: left;
+	display: inline-block;
+	width: 40px;
+}
+
+div.habitacion div.dia-hab {
+	background: #FFFFFF !important;
+	border-right: 1px solid #DDDDDD;
+	border-bottom: 1px solid #DDDDDD;
+}
+
+div.habitaciones div.habitacion div.dia-hab.deshabilitado {
+	cursor: default !important;
+	border-top: gray;
+	border-right: gray;
+	background-color: rgba(0,0,0,.2) !important;
+}
+
+div.dia-hab div.ocupado {
+	color: white;
+	background-color: blue !important;
+	z-index: 5000;
+	left: 20px;
+	position: relative;
+}
+
+div.dia-hab div.ocupado:hover {
+	background-color: green !important;
+	cursor: pointer;
+}

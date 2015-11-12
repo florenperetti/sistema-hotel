@@ -1,0 +1,5 @@
+suites:
+    main:
+        namespace: Hotel
+        psr4_prefix: Hotel
+        src_path: app
