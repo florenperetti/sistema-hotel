@@ -1,4 +1,6 @@
 <div class="form-group">
+	@include('alerts.error')
+	
 	{!!Form::label('nombre', 'Nombre: ')!!}
 	{!!Form::text('nombre', null, $attributes = ['id'=>'nombre', 'class'=>'form-control', 'placeholder'=>'Ingresa el nombre del cliente.'])!!}
 

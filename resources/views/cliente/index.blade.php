@@ -1,6 +1,10 @@
 @extends('layouts.admin')
 
 @section('contenido')
+@include('alerts.exito')
+@include('alerts.error')
+@include('alerts.confirm')
+@include('cliente.modal', $provincias)
 	<table class="table">
 		<thead>
 			<th>Nombre</th>
@@ -16,10 +20,5 @@
 @endsection
 
 @section('scripts')
-	<script type="text/javascript">
-		function darJson() {
-			return <?php echo json_encode($clientes); ?>;
-		}
-	</script>
 	{!!Html::script('js/clientes.js')!!}
 @endsection

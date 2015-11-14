@@ -87,3 +87,10 @@ INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `detalle`, `fechaReserva
 ALTER TABLE `hotel`.`cliente` 
 ADD COLUMN `updated_at` DATETIME NULL AFTER `email`,
 ADD COLUMN `created_at` DATETIME NULL AFTER `updated_at`;
+
+
+
+ALTER TABLE `hotel`.`cliente` 
+CHANGE COLUMN `email` `email` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL ,
+ADD COLUMN `deleted_at` DATETIME NULL DEFAULT '0000-00-00 00:00:00' AFTER `created_at`,
+ADD COLUMN `remember_token` VARCHAR(100) NULL DEFAULT NULL AFTER `deleted_at`;

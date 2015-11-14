@@ -18,12 +18,10 @@ $("#registro").click(function(e){
 		dataType: 'json',
 		data: JSON.stringify(cliente),
 		success: function(data) {
-	        $('#msj-success').fadeIn();
+	        Exito('Cliente creado correctamente.');
 	    },
-		error: function (xhr, ajaxOptions, thrownError) {
-           console.log(xhr.status);
-           console.log(xhr.responseText);
-           console.log(thrownError);
+		error: function (msj) {
+			msj.responseJSON.nombre != null ? Error(msj.responseJSON.nombre) : Error("Ha ocurrido un error al tratar de crear al cliente.");
        }
 	});
 });

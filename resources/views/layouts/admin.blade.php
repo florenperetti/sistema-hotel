@@ -100,6 +100,7 @@
     {!!Html::script('js/vendor/bootstrap.min.js')!!}
     {!!Html::script('js/vendor/metisMenu.min.js')!!}
     {!!Html::script('js/vendor/sb-admin-2.js')!!}
+    {!!Html::script('js/general.js')!!}
     
     @section('scripts')
     @show

@@ -5,12 +5,24 @@ namespace Hotel\Http\Controllers;
 use Illuminate\Http\Request;
 
 use Hotel\Http\Requests;
+use Hotel\Http\Requests\ClienteCreateRequest;
 use Hotel\Http\Controllers\Controller;
 use Hotel\Cliente;
-
+use Hotel\Provincia;
+use DB;
 
 class ClienteController extends Controller
 {
+/*
+    public function __construct() {
+        $this->beforeFilter('@find',['only'=> ['edit','update','destroy']]);
+    }
+
+    public function find(Route $route) {
+        $this->cliente = Cliente::find($route->getParameter('cliente'));
+    }*/
+
+
     /**
      * Display a listing of the resource.
      *
@@ -18,13 +30,14 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        return view('cliente.index');
+        $provincias = DB::table('provincia')->lists('nombre', 'id');
+        return view('cliente.index')->with('provincias',$provincias);
     }
 
     public function listing()
     {
         $clientes = Cliente::all();
-        return view('cliente.index', compact('clientes'));
+        return json_encode($clientes);
     }
 
     /**
@@ -34,7 +47,7 @@ class ClienteController extends Controller
      */
     public function create()
     {
-        $provincias = \Hotel\Provincia::lists('nombre', 'id');
+        $provincias = Provincia::lists('nombre', 'id');
         return view('cliente.create', compact('provincias'));
     }
 
@@ -44,13 +57,13 @@ class ClienteController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ClienteCreateRequest $request)
     {
         if($request->ajax()) {
             Cliente::create($request->all());
             return response()->json([
-                    "mensaje" => "creado"
-                ]);
+                "mensaje" => "creado"
+            ]);
         }
     }
 
@@ -73,11 +86,13 @@ class ClienteController extends Controller
      */
     public function edit($id)
     {
-        $cliente = Cliente::find($id);
 
-        return response()->json(
-            $cliente->toArray()
-        );
+        $cliente = Cliente::find($id);
+        return json_encode($cliente);
+
+        //return response()->json(
+         //   $this->cliente->toArray()
+        //);
     }
 
     /**
@@ -87,9 +102,20 @@ class ClienteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ClienteCreateRequest $request, $id)
     {
-        //
+        
+        if($request->ajax()) {
+            $cliente = Cliente::find($id);
+            $cliente->fill($request->all());
+
+            $cliente->save();
+
+
+            return response()->json(
+                $request->all()
+            );
+        }
     }
 
     /**
@@ -100,6 +126,10 @@ class ClienteController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $cliente = Cliente::find($id);
+        $cliente->delete();
+        return response()->json([
+            "mensaje" => "eliminado"
+        ]);
     }
 }
