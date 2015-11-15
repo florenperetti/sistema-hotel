@@ -55,42 +55,6 @@ INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Deposito');
 INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Transferencia');
 INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Contado');
 
-ALTER TABLE `hotel`.`cliente` 
-DROP FOREIGN KEY `cliente_idprovincia_foreign`;
-ALTER TABLE `hotel`.`cliente` 
-CHANGE COLUMN `nombre` `nombre` VARCHAR(45) CHARACTER SET 'utf8' NOT NULL DEFAULT 'Desconocido' ,
-CHANGE COLUMN `telefono` `telefono` VARCHAR(20) CHARACTER SET 'utf8' NOT NULL DEFAULT '-' ,
-CHANGE COLUMN `direccion` `direccion` VARCHAR(45) CHARACTER SET 'utf8' NOT NULL DEFAULT '-' ,
-CHANGE COLUMN `localidad` `localidad` VARCHAR(45) CHARACTER SET 'utf8' NULL ,
-CHANGE COLUMN `idProvincia` `idProvincia` INT(10) UNSIGNED NOT NULL DEFAULT 24 ;
-ALTER TABLE `hotel`.`cliente` 
-ADD CONSTRAINT `cliente_idprovincia_foreign`
-  FOREIGN KEY (`idProvincia`)
-  REFERENCES `hotel`.`provincia` (`id`);
-
-INSERT INTO `hotel`.`cliente` (`nombre`, `email`) VALUES ('Desconocido', '-');
-
-
-ALTER TABLE `hotel`.`reserva` 
-DROP FOREIGN KEY `reserva_idsenia_foreign`;
-ALTER TABLE `hotel`.`reserva` 
-CHANGE COLUMN `idSenia` `idSenia` INT(10) UNSIGNED NULL ;
-ALTER TABLE `hotel`.`reserva` 
-ADD CONSTRAINT `reserva_idsenia_foreign`
-  FOREIGN KEY (`idSenia`)
-  REFERENCES `hotel`.`senia` (`id`);
-  
+INSERT INTO `hotel`.`cliente` (`nombre`, `email`) VALUES ('Flor', 'florenperetti@gmail.com');
 
 INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `detalle`, `fechaReserva`, `fechaIngreso`, `fechaEgreso`, `habitacionAsignada`) VALUES ('1', '2', 'Test', '2015-11-25 10:00:00', '2015-12-25 10:00:00', '2015-12-30 10:00:00', '15');
-
-
-ALTER TABLE `hotel`.`cliente` 
-ADD COLUMN `updated_at` DATETIME NULL AFTER `email`,
-ADD COLUMN `created_at` DATETIME NULL AFTER `updated_at`;
-
-
-
-ALTER TABLE `hotel`.`cliente` 
-CHANGE COLUMN `email` `email` VARCHAR(45) CHARACTER SET 'utf8' NULL DEFAULT NULL ,
-ADD COLUMN `deleted_at` DATETIME NULL DEFAULT '0000-00-00 00:00:00' AFTER `created_at`,
-ADD COLUMN `remember_token` VARCHAR(100) NULL DEFAULT NULL AFTER `deleted_at`;

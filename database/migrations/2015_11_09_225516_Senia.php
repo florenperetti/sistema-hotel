@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Carbon\Carbon;
 
 class Senia extends Migration
 {
@@ -14,11 +15,11 @@ class Senia extends Migration
     {
         Schema::create('senia', function(Blueprint $table){
             $table->increments('id');
-            $table->integer('idTipoSenia')->unsigned();
+            $table->integer('idTipoSenia')->unsigned()->default(0);
             $table->foreign('idTipoSenia')->references('id')->on('tipoSenia');
-            $table->datetime('fechaSenia');
-            $table->decimal('monto',10,2);
-            $table->string('detalle',45);
+            $table->datetime('fechaSenia')->default(\Carbon\Carbon::now());
+            $table->decimal('monto',10,2)->default(0.00);
+            $table->string('detalle',45)->nullable();
         });
     }
 

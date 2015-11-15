@@ -14,7 +14,7 @@ class Reserva extends Migration
     {
         Schema::create('reserva', function(Blueprint $table) {
             $table->increments('id');
-            $table->integer('idEstado')->unsigned();
+            $table->integer('idEstado')->unsigned()->default(0);
             $table->foreign('idEstado')->references('id')->on('estadoReserva');
             $table->integer('idCliente')->unsigned();
             $table->foreign('idCliente')->references('id')->on('cliente');
@@ -22,9 +22,9 @@ class Reserva extends Migration
             $table->datetime('fechaReserva');
             $table->datetime('fechaIngreso');
             $table->datetime('fechaEgreso');
-            $table->integer('habitacionAsignada')->unsigned();
+            $table->integer('habitacionAsignada')->unsigned()->nullable();
             $table->foreign('habitacionAsignada')->references('numeroHabitacion')->on('habitacion');
-            $table->integer('idSenia')->unsigned();
+            $table->integer('idSenia')->unsigned()->nullable();
             $table->foreign('idSenia')->references('id')->on('senia');
         });
     }
