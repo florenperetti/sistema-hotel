@@ -17,7 +17,7 @@ class User extends Model implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword, SoftDeletes;
 
-    protected $dates = ['borrado_el'];
+    protected $dates = ['deleted_at'];
     /**
      * The database table used by the model.
      *
