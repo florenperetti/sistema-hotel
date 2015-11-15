@@ -5,6 +5,7 @@ $("#registro").click(function(e){
 	cliente.nombre = $("#nombre").val();
 	cliente.telefono = $("#telefono").val();
 	cliente.direccion = $("#direccion").val();
+	cliente.localidad = $("#localidad").val();
 	cliente.idProvincia = $("#idProvincia").val();
 	cliente.email = $("#email").val();
 

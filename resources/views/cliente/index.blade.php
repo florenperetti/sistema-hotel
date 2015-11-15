@@ -10,6 +10,7 @@
 			<th>Nombre</th>
 			<th>Teléfono</th>
 			<th>Dirección</th>
+			<th>Localidad</th>
 			<th>Provincia</th>
 			<th>Email</th>
 			<th>Operaciones</th>

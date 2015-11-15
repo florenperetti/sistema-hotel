@@ -31,13 +31,24 @@ class ClienteController extends Controller
     public function index()
     {
         $provincias = DB::table('provincia')->lists('nombre', 'id');
-        return view('cliente.index')->with('provincias',$provincias);
+        return view('cliente.index', compact('provincias'));
     }
 
     public function listing()
     {
-        $clientes = Cliente::all();
-        return json_encode($clientes);
+        $datos = DB::table('cliente')
+                        ->join('provincia', 'cliente.idProvincia', '=', 'provincia.id')
+                        ->select([  'cliente.nombre as nombre',
+                                    'cliente.id',
+                                    'cliente.telefono',
+                                    'cliente.direccion',
+                                    'cliente.localidad',
+                                    'cliente.email',
+                                    'provincia.nombre as provincia',
+                                    'provincia.id as idProvincia'
+                                ])
+                        ->get();
+        return json_encode($datos);
     }
 
     /**
@@ -86,13 +97,8 @@ class ClienteController extends Controller
      */
     public function edit($id)
     {
-
         $cliente = Cliente::find($id);
         return json_encode($cliente);
-
-        //return response()->json(
-         //   $this->cliente->toArray()
-        //);
     }
 
     /**
@@ -104,18 +110,11 @@ class ClienteController extends Controller
      */
     public function update(ClienteCreateRequest $request, $id)
     {
-        
-        if($request->ajax()) {
-            $cliente = Cliente::find($id);
-            $cliente->fill($request->all());
-
-            $cliente->save();
-
-
-            return response()->json(
-                $request->all()
-            );
-        }
+    
+        $cliente = Cliente::find($id);
+        $cliente->fill($request->all());
+        $cliente->save();
+        return $request->all();
     }
 
     /**

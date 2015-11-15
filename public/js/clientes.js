@@ -5,11 +5,10 @@ $(document).ready(function(){
 function Cargar() {
 	var datos = $('#datos');
 	var url = 'http://localhost:8000/clientes';
-
 	$('#datos').empty();
 	$.get(url, function(res) {
 		$(JSON.parse(res)).each(function(key, valor){
-			datos.append("<tr id='cliente-"+valor.id+"'><td>"+valor.nombre+"</td><td>"+valor.telefono+"</td><td>"+valor.direccion+"</td><td>"+valor.idProvincia+"</td><td>"+valor.email+"</td><td><button class='btn btn-primary' value='"+ valor.id +"' OnClick='Mostrar(this);'>Editar</button><button class='btn btn-danger' value='"+ valor.id +"' OnClick='Eliminar(this);'>Eliminar</button></td><tr>");
+			datos.append("<tr id='cliente-"+valor.id+"'><td>"+valor.nombre+"</td><td>"+valor.telefono+"</td><td>"+valor.direccion+"</td><td>"+valor.localidad+"</td><td>"+valor.provincia+"</td><td>"+valor.email+"</td><td><button class='btn btn-primary' value='"+ valor.id +"' OnClick='Mostrar(this);'>Editar</button><button class='btn btn-danger' value='"+ valor.id +"' OnClick='Eliminar(this);'>Eliminar</button></td><tr>");
 		});
 	});
 
@@ -47,6 +46,7 @@ function Mostrar(btn){
 		$('#nombre').val(cliente.nombre);
 		$("#telefono").val(cliente.telefono);
 		$("#direccion").val(cliente.direccion);
+		$("#localidad").val(cliente.localidad);
 		$("#idProvincia").val(cliente.idProvincia);
 		$("#email").val(cliente.email);
 		$('#id').val(cliente.id);
@@ -56,15 +56,17 @@ function Mostrar(btn){
 
 $('#actualizar').click(function(e){
 	e.preventDefault();
-	var valor = $('#id').val();
+	var id = $('#id').val();
 	var cliente = {};
+	cliente.id = id;
 	cliente.nombre = $("#nombre").val();
 	cliente.telefono = $("#telefono").val();
 	cliente.direccion = $("#direccion").val();
+	cliente.localidad = $("#localidad").val();
 	cliente.idProvincia = $("#idProvincia").val();
 	cliente.email = $("#email").val();
-
-	var url = "http://localhost:8000/cliente/"+valor+"";
+	console.log(cliente);
+	var url = "http://localhost:8000/cliente/"+id+"";
 	var token = $("#token").val();
 	$.ajax({
 		url: url,
@@ -73,11 +75,13 @@ $('#actualizar').click(function(e){
 		cache: false,
 		data: cliente,
 		success: function(data, textStatus, xhr) {
+			console.log(data);
 			Cargar();
 			$("#myModal").modal('toggle');
 			Exito('Cliente actualizado correctamente.');
 		},
 		error: function(error) {
+			console.log(error.responseText);
 			error.responseJSON.nombre != undefined ? Error(error.responseJSON.nombre) : Error('Ha ocurrido un error.');
 		}
 	});

@@ -53,10 +53,10 @@
                             <a href="#"><i class="fa fa-users fa-fw"></i> Cliente<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="cliente/create"><i class='fa fa-plus fa-fw'></i> Agregar</a>
+                                    <a href="/cliente/create"><i class='fa fa-plus fa-fw'></i> Agregar</a>
                                 </li>
                                 <li>
-                                    <a href="cliente/"><i class='fa fa-list-ol fa-fw'></i> Clientes</a>
+                                    <a href="/cliente"><i class='fa fa-list-ol fa-fw'></i> Clientes</a>
                                 </li>
                             </ul>
                         </li>

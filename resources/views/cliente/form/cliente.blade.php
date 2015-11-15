@@ -1,4 +1,5 @@
 <div class="form-group">
+	@include('alerts.exito')
 	@include('alerts.error')
 	
 	{!!Form::label('nombre', 'Nombre: ')!!}
@@ -9,6 +10,9 @@
 
 	{!!Form::label('direccion', 'Dirección: ')!!}
 	{!!Form::text('direccion', null, $attributes = ['id'=>'direccion', 'class'=>'form-control', 'placeholder'=>'Ingresa la dirección del cliente.'])!!}
+	
+	{!!Form::label('localidad', 'Localidad: ')!!}
+	{!!Form::text('localidad', null, $attributes = ['id'=>'localidad', 'class'=>'form-control', 'placeholder'=>'Ingresa la localidad del cliente.'])!!}
 
 	{!!Form::label('idProvincia', 'Provincia: ')!!}
 	{!!Form::select('idProvincia', $provincias, null, array('class' => 'form-control'))!!}
