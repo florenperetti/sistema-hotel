@@ -27,7 +27,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">Hotel Admin</a>
+                <a class="navbar-brand" href="/admin">Hotel Admin</a>
             </div>
            
 

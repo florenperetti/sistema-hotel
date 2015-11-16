@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 
 use Hotel\Http\Requests;
 use Hotel\Http\Controllers\Controller;
+use Hotel\EstadoReserva;
+use Hotel\Reserva;
+use Hotel\Cliente;
+use Hotel\Habitacion;
 
 class ReservasController extends Controller
 {
@@ -16,7 +20,7 @@ class ReservasController extends Controller
      */
     public function index()
     {
-        $reservas = \Hotel\Reserva::All();
+        $reservas = Reserva::all();
         return view('reserva.index', compact('reservas'));
     }
 
@@ -27,7 +31,16 @@ class ReservasController extends Controller
      */
     public function create()
     {
-        //
+        $estados = EstadoReserva::lists('estado', 'id');
+        $clientes = Cliente::lists('nombre', 'id');
+        $habitaciones = Habitacion::lists('numeroHabitacion');
+        /*$habitaciones = DB::table('habitacion')
+                        ->join('reserva', 'habitacion.numeroHabitacion', '=', 'reserva.habitacionAsignada')
+                        ->select('habitacion.numeroHabitacio as habitacion')
+                        ->where([''])
+                        ->get();
+*/
+        return view('reserva.create')->with('clientes', $clientes)->with('estados', $estados)->with('habitaciones', $habitaciones);
     }
 
     /**
@@ -38,7 +51,12 @@ class ReservasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->ajax()) {
+            Reserva::create($request->all());
+            return response()->json([
+                "mensaje" => "creado"
+            ]);
+        }
     }
 
     /**
@@ -60,7 +78,8 @@ class ReservasController extends Controller
      */
     public function edit($id)
     {
-        //
+        $reserva = Reserva::find($id);
+        return json_encode($reserva);
     }
 
     /**
@@ -72,7 +91,10 @@ class ReservasController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $reserva = Reserva::find($id);
+        $reserva->fill($request->all());
+        $cliente->save();
+        return $request->all();
     }
 
     /**
@@ -83,6 +105,10 @@ class ReservasController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $reserva = Reserva::find($id);
+        $reserva->delete();
+        return response()->json([
+            "mensaje" => "eliminado"
+        ]);
     }
 }

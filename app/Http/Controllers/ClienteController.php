@@ -47,6 +47,7 @@ class ClienteController extends Controller
                                     'provincia.nombre as provincia',
                                     'provincia.id as idProvincia'
                                 ])
+                        ->whereNull('deleted_at')
                         ->get();
         return json_encode($datos);
     }
@@ -110,7 +111,6 @@ class ClienteController extends Controller
      */
     public function update(ClienteCreateRequest $request, $id)
     {
-    
         $cliente = Cliente::find($id);
         $cliente->fill($request->all());
         $cliente->save();

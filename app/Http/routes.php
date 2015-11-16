@@ -14,8 +14,9 @@
 Route::get('/', 'FrontController@index');
 Route::get('ayuda', 'FrontController@ayuda');
 Route::get('admin', 'PanelReservasController@index');
-Route::get('reserva', 'ReservasController@index');
 
 
 Route::resource('cliente','ClienteController');
 Route::get('clientes','ClienteController@listing');
+
+Route::resource('reserva','ReservasController');

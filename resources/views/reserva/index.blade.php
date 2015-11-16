@@ -1,15 +1,19 @@
 @extends('layouts.admin')
 
 @section('contenido')
+@include('alerts.exito')
+@include('alerts.error')
+@include('alerts.confirm')
+@include('reserva.modal', $datos)
 	<div id="reservas"></div>
 
 	<table>
 		<tbody>
-			@foreach($reservas as $reserva)
-			<tr>
-				<td>$reserva->id</td>
-			</tr>
-			@enforeach
+			
 		</tbody>
 	</table>	
 @stop
+
+@section('scripts')
+	{!!Html::script('js/reservas.js')!!}
+@endsection

@@ -29,6 +29,10 @@
 	width: 100%;
 }
 
+.dia.actual {
+	background: yellow !important;
+}
+
 div.habitacion div, div.habitacion div.num-hab, div.habitacion div.dia-hab {
 	float: left;
 	display: inline-block;
@@ -60,3 +64,4 @@ div.dia-hab div.ocupado:hover {
 	background-color: green !important;
 	cursor: pointer;
 }
+

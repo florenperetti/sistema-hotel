@@ -10,6 +10,8 @@ use Hotel\Http\Controllers\Controller;
 use Hotel\Habitacion;
 use Hotel\Reserva;
 use Hotel\Fecha;
+use Hotel\EstadoReserva;
+use Hotel\Cliente;
 
 class PanelReservasController extends Controller
 {
@@ -20,11 +22,15 @@ class PanelReservasController extends Controller
      */
     public function index()
     {
-        $fecha = new Fecha(12);
-        $habitaciones = Habitacion::all();
+        $estados = EstadoReserva::lists('estado', 'id');
+        $clientes = Cliente::lists('nombre', 'id');
+
+        $fecha = new Fecha((\Carbon\Carbon::now()->month)+1);
+        $todasHabitaciones = Habitacion::all();
+        $habitaciones = Habitacion::lists('numeroHabitacion');
         $reservas = DB::table('reserva')->whereraw('MONTH(fechaIngreso) = ?', [12])->get();
         //$reservas = Reserva::all();
-        return view('admin.index', compact(array('habitaciones', 'reservas', 'fecha')));
+        return view('admin.index', compact(array('habitaciones', 'todasHabitaciones', 'reservas', 'estados', 'clientes')));
     }
 
     /**
