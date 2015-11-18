@@ -2,6 +2,7 @@
 	display: inline-block;
 	background: #DDDDDD;
 	font-size: 1em;
+	font: 16px/20px Antic, Helvetica, sans-serif;
 	line-height: 40px;
 	margin: 0;
 	padding: 0;
@@ -51,16 +52,84 @@ div.habitaciones div.habitacion div.dia-hab.deshabilitado {
 	border-right: gray;
 	background-color: rgba(0,0,0,.2) !important;
 }
-
+/*
 div.dia-hab div.ocupado {
 	color: white;
 	background-color: blue !important;
 	left: 20px;
 	position: relative;
-}
+}*/
 
 div.dia-hab div.ocupado:hover {
-	background-color: green !important;
 	cursor: pointer;
 }
+div.dia-hab div.ocupado {
+	display: inline-block;
+    box-sizing: content-box;
+    height: 35px !important;
+    position: relative;
+    content: "";
+    cursor: pointer;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: 40px;
+    line-height: 37px !important;
+    margin: 0px 13px 0px 0px;
+    padding: 10px 28px 10px 20px;
+    outline: none;
+    border: none;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    border-radius: 4px 1px 1px 4px;
+    font: 20px/24px Antic, Helvetica, sans-serif;
+    color: rgb(255, 255, 255);
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    text-indent: 0px;
+    text-overflow: ellipsis;
+    letter-spacing: normal;
+    white-space: normal;
+    word-spacing: normal;
+    background: rgb(26, 188, 156) !important;
+    box-shadow: rgb(22, 160, 133) -2px 5px 0px 0px, rgb(22, 160, 133) 5px 5px 0px 0px;
+}
 
+div.dia-hab div.ocupado:before {
+	display: inline-block;
+    box-sizing: content-box;
+    z-index: 1;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    content: "";
+    cursor: pointer;
+    top: 5px;
+    left: -10px;
+    bottom: auto;
+    outline: none;
+    border: none;
+    border-image-source: initial;
+    border-image-slice: initial;
+    border-image-width: initial;
+    border-image-outset: initial;
+    border-image-repeat: initial;
+    border-radius: 1px 1px 4px;
+    font: medium Arial, Helvetica, sans-serif;
+    color: rgba(255, 255, 255, 0.901961);
+    text-decoration: none;
+    text-align: left;
+    text-indent: 0px;
+    text-overflow: clip;
+    letter-spacing: normal;
+    white-space: normal;
+    word-spacing: normal;
+    background: rgb(26, 188, 156);
+    text-shadow: none;
+    box-shadow: rgb(22, 160, 133) -5px 0 0 0, rgb(22, 160, 133) -5px 0 0 0;
+    transform: rotateY(1deg) rotateZ(-45deg);
+}

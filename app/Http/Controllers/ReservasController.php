@@ -4,12 +4,15 @@ namespace Hotel\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Illuminate\Validation\Validator;
 use Hotel\Http\Requests;
+use Hotel\Http\Requests\ReservaCreateRequest;
 use Hotel\Http\Controllers\Controller;
 use Hotel\EstadoReserva;
 use Hotel\Reserva;
 use Hotel\Cliente;
 use Hotel\Habitacion;
+
 
 class ReservasController extends Controller
 {
@@ -21,7 +24,10 @@ class ReservasController extends Controller
     public function index()
     {
         $reservas = Reserva::all();
-        return view('reserva.index', compact('reservas'));
+        $estados = EstadoReserva::lists('estado', 'id');
+        $clientes = Cliente::lists('nombre', 'id');
+        $habitaciones = Habitacion::lists('numeroHabitacion', 'id');
+        return view('reserva.index')->with('reservas', $reservas)->with('estados', $estados)->with('clientes', $clientes)->with('habitaciones', $habitaciones);
     }
 
     /**
@@ -32,7 +38,9 @@ class ReservasController extends Controller
     public function create()
     {
         $estados = EstadoReserva::lists('estado', 'id');
-        return view('reserva.create')->with('estados', $estados);
+        $clientes = Cliente::lists('nombre', 'id');
+        $habitaciones = Habitacion::lists('numeroHabitacion', 'id');
+        return view('reserva.create')->with('estados', $estados)->with('clientes', $clientes)->with('habitaciones', $habitaciones);
     }
 
     /**
@@ -43,10 +51,16 @@ class ReservasController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'fechaIngreso' => 'required',
+            'fechaEgreso' => 'required|after:'.$request['fechaIngreso']
+        ]);
+
         if($request->ajax()) {
-            Reserva::create($request->all());
+            $reserva = Reserva::create($request->all());
             return response()->json([
-                "mensaje" => "creado"
+                "mensaje" => "creado",
+                "id" => $reserva->id
             ]);
         }
     }

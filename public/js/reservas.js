@@ -5,7 +5,7 @@ $(document).ready(function(){
 	// alert(reservas[0].detalle);
 });
 
-function Pintar(hab, ingreso, egreso, cliente) {
+function Pintar(hab, ingreso, egreso, cliente, idReserva) {
 	ingreso = new Date(ingreso);
 	egreso = new Date(egreso);
 	var diaIng = ingreso.getDate();
@@ -16,7 +16,7 @@ function Pintar(hab, ingreso, egreso, cliente) {
 	//console.log('pintando ' + hab + " desde " + diaIng  + "/" + mesIng +  " hasta " + diaEgr + "/" + mesEgr);
 	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
 												 .filter('[data-mes="'+mesIng+'"]');
-	d1.append('<div class="ocupado" style="width:'+estadia*40+'px;" >' + cliente + '</div>');
+	d1.append('<div id="'+idReserva+'" class="ocupado" style="width:'+((estadia*40)-25)+'px;" >' + cliente + '</div>');
 }
 
 function Renderizar() {
@@ -64,7 +64,7 @@ function Renderizar() {
 	});
 
 	$.each(darJson()["reservas"], function (indice, valor) {
-		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.idCliente);
+		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.idCliente, valor.id);
 	});
 }
 
@@ -75,12 +75,12 @@ function ModoEdicion(btn) {
 function modoEdicionHabitacion(btn) {
 	var habitacion = $(".habitacion");
 
-	var url = 'http://localhost:8000/reserva/'+btn.nombre+'/edit';
+	var url = 'http://localhost:8000/reserva/'+btn.name+'/edit';
 	Limpiar();
+	
 	$.get(url, function(res) {
 		$('#myModal').modal('toggle');
 		reserva = JSON.parse(res);
-		
 	});
 
 	/*
@@ -113,10 +113,16 @@ $("#crear").click(function(e){
 		success: function(data) {
 			$("#myModal").modal('toggle');
 	        Exito('Reserva creada correctamente.');
-	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, reserva.idCliente);
+	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, reserva.idCliente, data.id);
+	        Limpiar();
 	    },
-		error: function (msj) {
-			msj.responseJSON.fechaIngreso != null ? Error(msj.responseJSON.fechaIngreso) : Error("Ha ocurrido un error al tratar de crear la reserva.");
-       }
+		error: function (error) {
+			if (error.responseJSON != undefined) {
+				var mensaje = '';
+				if(error.responseJSON.fechaIngreso) mensaje += error.responseJSON.fechaIngreso;
+				if(error.responseJSON.fechaEgreso) mensaje += error.responseJSON.fechaEgreso;
+				Error(mensaje);
+			} else Error("Ha ocurrido un error al tratar de crear la reserva.");
+		}
 	});
 });

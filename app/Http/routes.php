@@ -15,7 +15,6 @@ Route::get('/', 'FrontController@index');
 Route::get('ayuda', 'FrontController@ayuda');
 Route::get('admin', 'PanelReservasController@index');
 
-
 Route::resource('cliente','ClienteController');
 Route::get('clientes','ClienteController@listing');
 

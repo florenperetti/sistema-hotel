@@ -4,7 +4,7 @@
 @include('alerts.exito')
 @include('alerts.error')
 @include('alerts.confirm')
-@include('reserva.modal', $datos)
+@include('reserva.modal')
 	<div id="reservas"></div>
 
 	<table>
@@ -15,5 +15,4 @@
 @stop
 
 @section('scripts')
-	{!!Html::script('js/reservas.js')!!}
 @endsection

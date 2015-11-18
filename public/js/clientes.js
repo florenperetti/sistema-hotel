@@ -80,7 +80,6 @@ $('#actualizar').click(function(e){
 			Exito('Cliente actualizado correctamente.');
 		},
 		error: function(error) {
-			console.log(error.responseText);
 			error.responseJSON.nombre != undefined ? Error(error.responseJSON.nombre) : Error('Ha ocurrido un error.');
 		}
 	});
