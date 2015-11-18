@@ -27,8 +27,8 @@ class PanelReservasController extends Controller
 
         $fecha = new Fecha((\Carbon\Carbon::now()->month)+1);
         $todasHabitaciones = Habitacion::all();
-        $habitaciones = Habitacion::lists('numeroHabitacion');
-        $reservas = DB::table('reserva')->whereraw('MONTH(fechaIngreso) = ?', [12])->get();
+        $habitaciones = Habitacion::lists('numeroHabitacion', 'id');
+        $reservas = DB::table('reserva')->whereraw('MONTH(fechaIngreso) = ?', [11])->get();
         //$reservas = Reserva::all();
         return view('admin.index', compact(array('habitaciones', 'todasHabitaciones', 'reservas', 'estados', 'clientes')));
     }
@@ -40,7 +40,6 @@ class PanelReservasController extends Controller
      */
     public function listing(Request $request)
     {
-
         if ($request->ajax()) {
             $habitaciones = Habitacion::all();
             return response()->json($habitaciones);

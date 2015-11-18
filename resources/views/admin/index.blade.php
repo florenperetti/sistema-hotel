@@ -2,11 +2,9 @@
 
 @section('contenido')
 @include('reserva.modal', $estados)
-	{!!Form::open()!!}
-	<div id="msj-success" class="alert alert-success alert-dismissible" role="alert" style="display:none">
-		<strong>Reserva Agregada Correctamente.</strong>
-	</div>
-	
+@include('alerts.exito')
+@include('alerts.error')
+	{!!Form::open()!!}	
 	<h2 id="titulo"></h2>
 	
 	<input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">

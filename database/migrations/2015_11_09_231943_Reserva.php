@@ -22,8 +22,8 @@ class Reserva extends Migration
             $table->datetime('fechaReserva');
             $table->datetime('fechaIngreso');
             $table->datetime('fechaEgreso');
-            $table->integer('habitacionAsignada')->unsigned()->nullable();
-            $table->foreign('habitacionAsignada')->references('numeroHabitacion')->on('habitacion');
+            $table->integer('idHabitacionAsignada')->unsigned()->nullable();
+            $table->foreign('idHabitacionAsignada')->references('id')->on('habitacion');
             $table->integer('idSenia')->unsigned()->nullable();
             $table->foreign('idSenia')->references('id')->on('senia');
         });

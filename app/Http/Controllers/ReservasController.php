@@ -32,15 +32,7 @@ class ReservasController extends Controller
     public function create()
     {
         $estados = EstadoReserva::lists('estado', 'id');
-        $clientes = Cliente::lists('nombre', 'id');
-        $habitaciones = Habitacion::lists('numeroHabitacion');
-        /*$habitaciones = DB::table('habitacion')
-                        ->join('reserva', 'habitacion.numeroHabitacion', '=', 'reserva.habitacionAsignada')
-                        ->select('habitacion.numeroHabitacio as habitacion')
-                        ->where([''])
-                        ->get();
-*/
-        return view('reserva.create')->with('clientes', $clientes)->with('estados', $estados)->with('habitaciones', $habitaciones);
+        return view('reserva.create')->with('estados', $estados);
     }
 
     /**

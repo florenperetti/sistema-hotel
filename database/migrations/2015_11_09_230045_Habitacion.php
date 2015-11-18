@@ -13,8 +13,8 @@ class Habitacion extends Migration
     public function up()
     {
         Schema::create('habitacion', function(Blueprint $table) {
-            $table->integer('numeroHabitacion')->unsigned();
-            $table->primary('numeroHabitacion');
+            $table->increments('id');
+            $table->integer('numeroHabitacion');
             $table->integer('idTipoHabitacion')->unsigned();
             $table->foreign('idTipoHabitacion')->references('id')->on('tipoHabitacion');
             $table->integer('capacidad')->default(2);

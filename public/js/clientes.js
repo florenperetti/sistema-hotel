@@ -75,7 +75,6 @@ $('#actualizar').click(function(e){
 		cache: false,
 		data: cliente,
 		success: function(data, textStatus, xhr) {
-			console.log(data);
 			Cargar();
 			$("#myModal").modal('toggle');
 			Exito('Cliente actualizado correctamente.');

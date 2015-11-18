@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Reserva extends Model
 {
     protected $table = "reserva";
-    protected $fillable = array('fechaIngreso','fechaEgreso','fechaReserva', 'detalle','idCliente','idEstado', 'habitacionAsignada');
+    protected $fillable = array('fechaIngreso','fechaEgreso','fechaReserva', 'detalle','idCliente','idEstado', 'idHabitacionAsignada');
     public $timestamps = false;
 
     public function cliente() {
@@ -19,7 +19,7 @@ class Reserva extends Model
     }
 
     public function habitacion() {
-    	return $this->hasOne('Hotel\Habitacion', 'numeroHabitacion', 'habitacionAsignada');
+    	return $this->hasOne('Hotel\Habitacion', 'id', 'idHabitacionAsignada');
     }
 
     public function senia() {

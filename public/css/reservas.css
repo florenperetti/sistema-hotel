@@ -55,7 +55,6 @@ div.habitaciones div.habitacion div.dia-hab.deshabilitado {
 div.dia-hab div.ocupado {
 	color: white;
 	background-color: blue !important;
-	z-index: 5000;
 	left: 20px;
 	position: relative;
 }

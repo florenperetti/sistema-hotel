@@ -5,6 +5,20 @@ $(document).ready(function(){
 	// alert(reservas[0].detalle);
 });
 
+function Pintar(hab, ingreso, egreso, cliente) {
+	ingreso = new Date(ingreso);
+	egreso = new Date(egreso);
+	var diaIng = ingreso.getDate();
+	var diaEgr = egreso.getDate();
+	var mesIng = ingreso.getMonth()+1;
+	var mesEgr = egreso.getMonth()+1;
+	var estadia = diaEgr - diaIng;
+	//console.log('pintando ' + hab + " desde " + diaIng  + "/" + mesIng +  " hasta " + diaEgr + "/" + mesEgr);
+	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
+												 .filter('[data-mes="'+mesIng+'"]');
+	d1.append('<div class="ocupado" style="width:'+estadia*40+'px;" >' + cliente + '</div>');
+}
+
 function Renderizar() {
 	var fechaIzq = new Date();
 	var fechaDer = new Date();
@@ -41,31 +55,17 @@ function Renderizar() {
 	// Creo dias en habs
 	var divHabitaciones = $(".habitaciones");
 	$.each(darJson()["habitaciones"], function (indice, valor) {
-		divHabitaciones.append('<div class="habitacion" data-numero-hab="'+ valor.numeroHabitacion +'"><div class="num-hab">' + valor.numeroHabitacion + '</div><input name="'+valor.numeroHabitacion+'" type="button" value="+" class="btn btn-primary" onclick="modoEdicionHabitacion(this)" ></input>');
-		var divHab = $('div.habitacion[data-numero-hab='+valor.numeroHabitacion+']');
+		divHabitaciones.append('<div class="habitacion" data-id-hab="'+ valor.id +'"><div class="num-hab">' + valor.numeroHabitacion + '</div><input name="'+valor.id+'" type="button" value="+" class="btn btn-primary" onclick="modoEdicionHabitacion(this)" ></input>');
+		var divHab = $('div.habitacion[data-id-hab='+valor.id+']');
 		for( var dia = 0; dia < dias.length; dia++ ) {
-			divHab.append('<div class="dia-hab" data-dia="' + dias[dia]["dia"] + '" data-mes="' + dias[dia]["mes"] + '" data-hab="' + valor.numeroHabitacion + '"></div>');
+			divHab.append('<div class="dia-hab" data-dia="' + dias[dia]["dia"] + '" data-mes="' + (dias[dia]["mes"]+1) + '" data-hab="' + valor.id + '"></div>');
 		}
 		divHabitaciones.append('</div>');
 	});
 
 	$.each(darJson()["reservas"], function (indice, valor) {
-		pintar(valor.habitacionAsignada, valor.fechaIngreso, valor.fechaEgreso);
+		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.idCliente);
 	});
-}
-
-function pintar(hab, ingreso, egreso) {
-	ingreso = new Date(ingreso);
-	egreso = new Date(egreso);
-	var diaIng = ingreso.getDate();
-	var diaEgr = egreso.getDate();
-	var mesIng = ingreso.getMonth()+1;
-	var mesEgr = egreso.getMonth()+1;
-	var estadia = diaEgr - diaIng;
-
-	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
-												 .filter('[data-mes="'+mesIng+'"]')
-		.append('<div class="ocupado" style="width:'+estadia*40+'px;" >hola</div>');
 }
 
 function ModoEdicion(btn) {
@@ -89,3 +89,34 @@ function modoEdicionHabitacion(btn) {
 	});
 */
 }
+
+$("#crear").click(function(e){
+	e.preventDefault();
+	var reserva = {};
+	var token = $("#token").val();
+	reserva.fechaReserva = $("#fechaReserva").val();
+	reserva.fechaIngreso = $("#fechaIngreso").val() + ' 10:00:00';
+	reserva.fechaEgreso = $("#fechaEgreso").val() + ' 09:59:59';
+	reserva.idCliente = $("#idCliente").val();
+	reserva.idEstado = $("#idEstado").val();
+	reserva.idHabitacionAsignada = $("#habitacionAsignada").val();
+	reserva.detalle = $("#detalle").val();
+	var url = "http://localhost:8000/reserva";
+	
+	$.ajax({
+		url: url,
+		headers: {'X-CSRF-TOKEN': token },
+		type: 'POST',
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		data: JSON.stringify(reserva),
+		success: function(data) {
+			$("#myModal").modal('toggle');
+	        Exito('Reserva creada correctamente.');
+	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, reserva.idCliente);
+	    },
+		error: function (msj) {
+			msj.responseJSON.fechaIngreso != null ? Error(msj.responseJSON.fechaIngreso) : Error("Ha ocurrido un error al tratar de crear la reserva.");
+       }
+	});
+});
