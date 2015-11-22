@@ -18,6 +18,9 @@ class Reserva extends Migration
             $table->foreign('idEstado')->references('id')->on('estadoReserva');
             $table->integer('idCliente')->unsigned();
             $table->foreign('idCliente')->references('id')->on('cliente');
+            $table->integer('pax')->nullable()->default(2);
+            $table->integer('idTipoHabitacion')->unsigned()->nullable();
+            $table->foreign('idTipoHabitacion')->references('id')->on('tipoHabitacion');
             $table->string('detalle', 200);
             $table->datetime('fechaReserva');
             $table->datetime('fechaIngreso');
