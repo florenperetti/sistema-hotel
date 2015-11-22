@@ -12,7 +12,8 @@ use Hotel\EstadoReserva;
 use Hotel\Reserva;
 use Hotel\Cliente;
 use Hotel\Habitacion;
-
+use Hotel\TipoHabitacion;
+use DB;
 
 class ReservasController extends Controller
 {
@@ -40,7 +41,8 @@ class ReservasController extends Controller
         $estados = EstadoReserva::lists('estado', 'id');
         $clientes = Cliente::lists('nombre', 'id');
         $habitaciones = Habitacion::lists('numeroHabitacion', 'id');
-        return view('reserva.create')->with('estados', $estados)->with('clientes', $clientes)->with('habitaciones', $habitaciones);
+        $tipo = TipoHabitacion::lists('tipoHabitacion', 'id');
+        return view('reserva.create')->with('estados', $estados)->with('clientes', $clientes)->with('habitaciones', $habitaciones)->with('tipo',$tipo);
     }
 
     /**
@@ -58,8 +60,9 @@ class ReservasController extends Controller
 
         if($request->ajax()) {
             $reserva = Reserva::create($request->all());
+            $cliente = Cliente::find($request->idCliente);
             return response()->json([
-                "mensaje" => "creado",
+                "nombre" => $cliente->nombre,
                 "id" => $reserva->id
             ]);
         }
@@ -73,7 +76,28 @@ class ReservasController extends Controller
      */
     public function show($id)
     {
-        //
+        $reserva = DB::table('reserva')
+                        ->join('cliente', 'reserva.idCliente', '=', 'cliente.id')
+                        ->join('habitacion', 'reserva.idHabitacionAsignada', '=', 'habitacion.id')
+                        ->join('tipoHabitacion', 'tipoHabitacion.id', '=', 'habitacion.idTipoHabitacion')
+                        ->join('estadoReserva', 'reserva.idEstado', '=', 'estadoReserva.id')
+                        ->select([  'reserva.fechaIngreso',
+                                    'reserva.fechaEgreso',
+                                    'reserva.fechaReserva',
+                                    'reserva.pax',
+                                    'reserva.id',
+                                    'cliente.nombre',
+                                    'cliente.id as idCliente',
+                                    'estadoReserva.id as idEstado',
+                                    'estadoReserva.estado',
+                                    'reserva.idHabitacionAsignada',
+                                    'habitacion.numeroHabitacion',
+                                    'tipoHabitacion.tipoHabitacion'
+                                ])
+                        ->where('reserva.id', "=", $id)
+                        ->first();
+
+        return json_encode($reserva);
     }
 
     /**

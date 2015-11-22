@@ -1,19 +1,25 @@
+#reservas {
+    font: 16px/20px Antic, Helvetica, sans-serif;
+    position: relative;
+    width: 1250px;
+}
+
 #reservas div {
-	display: inline-block;
-	background: #DDDDDD;
-	font-size: 1em;
-	font: 16px/20px Antic, Helvetica, sans-serif;
-	line-height: 40px;
-	margin: 0;
-	padding: 0;
-	text-align: center;
+    font-size: 1em;
+    background: #DDDDDD;
+    display: inline-block;
+    line-height: 40px;
+    margin: 0;
+    padding: 0;
+    text-align: center;
 }
 
 #reservas div.dias, #reservas div.habitaciones,  #reservas div.habitaciones div.habitacion {
 	display: block;
+    height: 40px;
+    position: relative;
 	width: 100%;
 }
-
 
 #reservas div.dias div, #reservas div.habitaciones div {
 	display: inline-block;
@@ -21,23 +27,12 @@
 	width: 40px; height: 40px;
 }
 
-#reservas div:nth-child(odd), .habitacion:nth-child(odd) {
+#reservas div:nth-child(odd) {
 	background: #EEEEEE;
-}
-
-#reservas div.habitaciones {
-	position: relative;
-	width: 100%;
 }
 
 .dia.actual {
 	background: yellow !important;
-}
-
-div.habitacion div, div.habitacion div.num-hab, div.habitacion div.dia-hab {
-	float: left;
-	display: inline-block;
-	width: 40px;
 }
 
 div.habitacion div.dia-hab {
@@ -52,18 +47,12 @@ div.habitaciones div.habitacion div.dia-hab.deshabilitado {
 	border-right: gray;
 	background-color: rgba(0,0,0,.2) !important;
 }
-/*
-div.dia-hab div.ocupado {
-	color: white;
-	background-color: blue !important;
-	left: 20px;
-	position: relative;
-}*/
 
 div.dia-hab div.ocupado:hover {
 	cursor: pointer;
 }
 div.dia-hab div.ocupado {
+    z-index: 1 !important;
 	display: inline-block;
     box-sizing: content-box;
     height: 35px !important;
@@ -102,7 +91,7 @@ div.dia-hab div.ocupado {
 div.dia-hab div.ocupado:before {
 	display: inline-block;
     box-sizing: content-box;
-    z-index: 1;
+    z-index: 1 !important;
     width: 25px;
     height: 25px;
     position: absolute;
@@ -132,4 +121,16 @@ div.dia-hab div.ocupado:before {
     text-shadow: none;
     box-shadow: rgb(22, 160, 133) -5px 0 0 0, rgb(22, 160, 133) -5px 0 0 0;
     transform: rotateY(1deg) rotateZ(-45deg);
+}
+
+div.dia-hab div.ocupado.antes:before {
+    display:none;
+}
+div.dia-hab div.ocupado.antes {
+    left: 0;
+    border-radius: 0 1px 1px 0;
+    box-shadow: rgb(22, 160, 133) 0px 5px 0px 0px, rgb(22, 160, 133) 5px 5px 0px 0px;
+}
+div.dia-hab div.ocupado.despues {
+    box-shadow: rgb(22, 160, 133) -2px 5px 0px 0px, rgb(22, 160, 133) 0 5px 0px 0px;
 }

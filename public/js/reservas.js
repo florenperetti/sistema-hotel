@@ -1,22 +1,73 @@
+var reservas = darJson()["reservas"];
+var limiteIzq;
+var limiteDer;
+
 $(document).ready(function(){
-
 	Renderizar();
-
-	// alert(reservas[0].detalle);
 });
 
 function Pintar(hab, ingreso, egreso, cliente, idReserva) {
 	ingreso = new Date(ingreso);
 	egreso = new Date(egreso);
+
+	var clase = "ocupado";
+	if (ingreso < limiteIzq) { // Si ingresa antes de limite izq
+		ingreso = new Date(limiteIzq);
+		clase += " antes";
+	}
+	if(egreso > limiteDer) {
+		egreso = new Date(limiteDer);
+		clase += " despues";
+	}
+
 	var diaIng = ingreso.getDate();
 	var diaEgr = egreso.getDate();
 	var mesIng = ingreso.getMonth()+1;
 	var mesEgr = egreso.getMonth()+1;
 	var estadia = diaEgr - diaIng;
+	var ancho = 0;
+	if(clase.indexOf("antes")> -1) {
+		estadia++;
+	}
+	
+	ancho = ((estadia*40)-25);
+
+	if(clase.indexOf("despues")> -1) {
+		ancho = ((estadia*40));
+	}
+
 	//console.log('pintando ' + hab + " desde " + diaIng  + "/" + mesIng +  " hasta " + diaEgr + "/" + mesEgr);
 	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
 												 .filter('[data-mes="'+mesIng+'"]');
-	d1.append('<div id="'+idReserva+'" class="ocupado" style="width:'+((estadia*40)-25)+'px;" >' + cliente + '</div>');
+	var divNuevo = $('<div id="'+idReserva+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
+	d1.append(divNuevo);
+	divNuevo.click(MostrarDetallesReserva);
+}
+
+function MostrarDetallesReserva() {
+	var token = $("#token").val();
+	var url = "http://localhost:8000/reserva/"+this.id;
+	$.ajax({
+		url: url,
+		headers: {'X-CSRF-TOKEN': token },
+		type: 'GET',
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		data: this.id,
+		success: function(data) {
+			var cuerpo = $("#myModal-info").find("div.modal-body").html("");
+			cuerpo.append("<p>Estado de la reserva: " + data.estado + "</p>");
+			cuerpo.append("<p><b>In/Out:</b> de " + data.fechaIngreso + " al " + data.fechaEgreso + "</i> ( noches)</p>");
+			cuerpo.append("<p>Pax: " + data.pax + " " + data.tipoHabitacion + "</p>");
+			cuerpo.append("<p>Habitación: " + data.numeroHabitacion + "</p>");
+			if (data.detalle) cuerpo.append("<p>Detalles:</p><p>" + data.detalle + "</p>");
+			$("#myModal-info").modal('toggle');
+			$("#myModal-info #tituloReserva").html("Reserva de "+data.nombre);
+	    },
+		error: function (error) {
+			Error("Ha ocurrido un error al cargar la reserva.");
+		}
+	});
 }
 
 function Renderizar() {
@@ -27,9 +78,9 @@ function Renderizar() {
 
 	fechaIzq = fechaIzq.setDate(fechaIzq.getDate() - 7 );
 	fechaDer = fechaDer.setDate(fechaDer.getDate() + 21 );
-	var limiteIzq = new Date(fechaIzq);
-	var limiteDer = new Date(fechaDer);
-
+	limiteIzq = new Date(fechaIzq);
+	limiteDer = new Date(fechaDer);
+	
 	// Nombres del mes
 	var monthNames = [	"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
 						"Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
@@ -41,7 +92,7 @@ function Renderizar() {
 
 	var dias = [];
 
-	for (var d = limiteIzq; d <= limiteDer; d.setDate(d.getDate() + 1)) {
+	for (var d = new Date(limiteIzq); d <= limiteDer; d.setDate(d.getDate() + 1)) {
 		diaNuevo = new Date(d);
 		dias.push({ "dia" : diaNuevo.getDate(), "mes" : diaNuevo.getMonth() });
 	}
@@ -58,13 +109,14 @@ function Renderizar() {
 		divHabitaciones.append('<div class="habitacion" data-id-hab="'+ valor.id +'"><div class="num-hab">' + valor.numeroHabitacion + '</div><input name="'+valor.id+'" type="button" value="+" class="btn btn-primary" onclick="modoEdicionHabitacion(this)" ></input>');
 		var divHab = $('div.habitacion[data-id-hab='+valor.id+']');
 		for( var dia = 0; dia < dias.length; dia++ ) {
-			divHab.append('<div class="dia-hab" data-dia="' + dias[dia]["dia"] + '" data-mes="' + (dias[dia]["mes"]+1) + '" data-hab="' + valor.id + '"></div>');
+			divHab.append('<div id="" class="dia-hab" data-dia="' + dias[dia]["dia"] + '" data-mes="' + (dias[dia]["mes"]+1) + '" data-hab="' + valor.id + '"></div>');
 		}
 		divHabitaciones.append('</div>');
 	});
 
-	$.each(darJson()["reservas"], function (indice, valor) {
-		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.idCliente, valor.id);
+	$.each(reservas, function (indice, valor) {
+		
+		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.nombre, valor.id);
 	});
 }
 
@@ -101,6 +153,8 @@ $("#crear").click(function(e){
 	reserva.idEstado = $("#idEstado").val();
 	reserva.idHabitacionAsignada = $("#habitacionAsignada").val();
 	reserva.detalle = $("#detalle").val();
+	reserva.idTipoHabitacion = $("#idTipoHabitacion").val();
+	reserva.pax = $("#pax").val();
 	var url = "http://localhost:8000/reserva";
 	
 	$.ajax({
@@ -113,7 +167,7 @@ $("#crear").click(function(e){
 		success: function(data) {
 			$("#myModal").modal('toggle');
 	        Exito('Reserva creada correctamente.');
-	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, reserva.idCliente, data.id);
+	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, data.nombre, data.id);
 	        Limpiar();
 	    },
 		error: function (error) {

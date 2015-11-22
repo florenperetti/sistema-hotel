@@ -2,6 +2,7 @@
 
 @section('contenido')
 @include('reserva.modal', $estados)
+@include('reserva.modal-info')
 @include('alerts.exito')
 @include('alerts.error')
 	{!!Form::open()!!}	
@@ -27,4 +28,5 @@
 		}
 	</script>
 	{!!Html::script('js/reservas.js')!!}
+	{!!Html::script('http://code.jquery.com/ui/1.11.4/jquery-ui.js')!!}
 @endsection
