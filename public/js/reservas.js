@@ -56,6 +56,10 @@ function Pintar(hab, ingreso, egreso, cliente, idReserva) {
 		ancho = estadia*40;
 	}
 
+	if (ancho <= 80) {
+		cliente = "*";
+	}
+
 	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
 												 .filter('[data-mes="'+mesIng+'"]');
 	var divNuevo = $('<div id="'+idReserva+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
@@ -78,10 +82,12 @@ function MostrarDetallesReserva() {
 			var fechaIngreso = Formatear(data.fechaIngreso);
 			var fechaEgreso = Formatear(data.fechaEgreso);
 			var cuerpo = $("#myModal-info").find("div.modal-body").html("");
-			cuerpo.append("<p>Estado de la reserva: " + data.estado + "</p>");
+			var hab = '';
+			hab = data.numeroHabitacion != 'Depto.' ? 'Hab:<br/>' + data.numeroHabitacion : 'Depto.' ;
+			cuerpo.append("<div class='info-hab'>" + hab + "</div>");
+			cuerpo.append("<p><b>Estado de la reserva:</b> " + data.estado + "</p>");
 			cuerpo.append("<p><b>In/Out:</b> de " + fechaIngreso + " al " + fechaEgreso + "</i> (" + DiferenciaDias(data.fechaIngreso, data.fechaEgreso) + " noches)</p>");
-			cuerpo.append("<p>Pax: " + data.pax + " " + data.tipoHabitacion + "</p>");
-			cuerpo.append("<p>Habitación: " + data.numeroHabitacion + "</p>");
+			cuerpo.append("<p><b>Pax:</b> " + data.pax + " " + data.tipoHabitacion + "</p>");
 			if (data.detalle) cuerpo.append("<p>Detalles:</p><p>" + data.detalle + "</p>");
 			$("#myModal-info").modal('toggle');
 			$("#myModal-info #tituloReserva").html("Reserva de "+data.nombre);
@@ -137,7 +143,6 @@ function Renderizar() {
 	});
 
 	$.each(reservas, function (indice, valor) {
-		
 		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.nombre, valor.id);
 	});
 }
