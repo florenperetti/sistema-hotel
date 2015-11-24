@@ -2,8 +2,29 @@ var reservas = darJson()["reservas"];
 var limiteIzq;
 var limiteDer;
 
-$(document).ready(function(){
+$(document).ready(function() {
 	Renderizar();
+
+	$('#autoCliente').autocomplete({
+	    minLength:2,
+		source: function(request, response) {
+			var token = $("#token").val();
+			$.ajax({
+				url: 'http://localhost:8000/getCliente',
+				headers: {'X-CSRF-TOKEN': token },
+				data: { term : $('#autoCliente').val() },
+				dataType: "json",
+				type: 'post',
+				success: function(data) {
+					response(data);
+				}
+			});
+		},
+  	  	select: function( event, ui ) {
+	        $('#idCliente').val(ui.item.id);
+	        $('#autoCliente').val(ui.item.value);
+	    }
+    });
 });
 
 function Pintar(hab, ingreso, egreso, cliente, idReserva) {
@@ -21,22 +42,20 @@ function Pintar(hab, ingreso, egreso, cliente, idReserva) {
 	}
 
 	var diaIng = ingreso.getDate();
-	var diaEgr = egreso.getDate();
 	var mesIng = ingreso.getMonth()+1;
-	var mesEgr = egreso.getMonth()+1;
-	var estadia = diaEgr - diaIng;
+	var estadia = DiferenciaDias(ingreso,egreso);
 	var ancho = 0;
-	if(clase.indexOf("antes")> -1) {
+	if(clase.indexOf("antes") > -1) {
 		estadia++;
 	}
 	
-	ancho = ((estadia*40)-25);
+	ancho = (estadia*40)-25;
 
-	if(clase.indexOf("despues")> -1) {
-		ancho = ((estadia*40));
+	if(clase.indexOf("despues") > -1) {
+		estadia--;
+		ancho = estadia*40;
 	}
 
-	//console.log('pintando ' + hab + " desde " + diaIng  + "/" + mesIng +  " hasta " + diaEgr + "/" + mesEgr);
 	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
 												 .filter('[data-mes="'+mesIng+'"]');
 	var divNuevo = $('<div id="'+idReserva+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
@@ -55,9 +74,12 @@ function MostrarDetallesReserva() {
 		dataType: 'json',
 		data: this.id,
 		success: function(data) {
+			console.log(data);
+			var fechaIngreso = Formatear(data.fechaIngreso);
+			var fechaEgreso = Formatear(data.fechaEgreso);
 			var cuerpo = $("#myModal-info").find("div.modal-body").html("");
 			cuerpo.append("<p>Estado de la reserva: " + data.estado + "</p>");
-			cuerpo.append("<p><b>In/Out:</b> de " + data.fechaIngreso + " al " + data.fechaEgreso + "</i> ( noches)</p>");
+			cuerpo.append("<p><b>In/Out:</b> de " + fechaIngreso + " al " + fechaEgreso + "</i> (" + DiferenciaDias(data.fechaIngreso, data.fechaEgreso) + " noches)</p>");
 			cuerpo.append("<p>Pax: " + data.pax + " " + data.tipoHabitacion + "</p>");
 			cuerpo.append("<p>Habitación: " + data.numeroHabitacion + "</p>");
 			if (data.detalle) cuerpo.append("<p>Detalles:</p><p>" + data.detalle + "</p>");

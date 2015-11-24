@@ -22,9 +22,10 @@
 
 	{!!Form::label('habitacionAsignada', 'Habitación:')!!}
 	{!!Form::select('habitacionAsignada', $habitaciones, null, array('class' => 'form-control'))!!}
-
-	{!!Form::label('idCliente', 'Cliente:')!!}
-	{!!Form::select('idCliente', $clientes, null, array('class' => 'form-control'))!!}
+	
+ 	{!!Form::label('autoCliente', 'Cliente:')!!}
+	{!!Form::text('autoCliente', '', $attributes = ['id'=>'autoCliente', 'class'=>'form-control', 'placeholder' => 'Ingrese el nombre del cliente.'])!!}
+	{!!Form::hidden('idCliente', '', array('id'=>'idCliente'))!!}
 
 	{!!Form::label('detalle', 'Detalles:')!!}
 	{!!Form::textarea('detalle', null, $attributes = ['id'=>'detalle', 'class'=>'form-control', 'placeholder'=>'Ingrese detalles adicionales.', 'rows'=> 3])!!}

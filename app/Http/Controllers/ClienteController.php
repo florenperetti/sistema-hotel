@@ -3,6 +3,7 @@
 namespace Hotel\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 use Hotel\Http\Requests;
 use Hotel\Http\Requests\ClienteCreateRequest;
@@ -100,6 +101,27 @@ class ClienteController extends Controller
     {
         $cliente = Cliente::find($id);
         return json_encode($cliente);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getCliente(Request $request)
+    {
+        $cliente = $request->term;
+        $clientes = Cliente::all();
+        $result = [];
+
+        foreach ($clientes as $key => $cli) {
+            if(strpos(Str::lower($cli['nombre']), $cliente) !== false){
+                $result[] = [ "value" => $cli['nombre'], "label" => $cli['nombre'], "id" => $cli['id'] ];
+            }
+        }
+        
+        return json_encode($result);
     }
 
     /**

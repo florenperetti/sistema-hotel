@@ -17,5 +17,7 @@ Route::get('admin', 'PanelReservasController@index');
 
 Route::resource('cliente','ClienteController');
 Route::get('clientes','ClienteController@listing');
+Route::post('getCliente','ClienteController@getCliente');
 
 Route::resource('reserva','ReservasController');
+

@@ -8,7 +8,3 @@
 	{!!Form::close()!!}
 
 @endsection
-
-@section('scripts')
-	{!!Html::script('js/reserva.js')!!}
-@endsection

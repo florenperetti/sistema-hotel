@@ -12,6 +12,9 @@
     {!!Html::style('css/sb-admin-2.css')!!}
     {!!Html::style('css/font-awesome.min.css')!!}
     {!!Html::style('css/reservas.css')!!}
+    {!!Html::style('css/jquery-ui.min.css')!!}
+    {!!Html::style('css/jquery-ui.structure.min.css')!!}
+    {!!Html::style('css/jquery-ui.theme.min.css')!!}
 </head>
 
 <body>
@@ -97,6 +100,7 @@
     </div>
     
     {!!Html::script('js/vendor/jquery.min.js')!!}
+    {!!Html::script('js/vendor/jquery-ui.min.js')!!}
     {!!Html::script('js/vendor/bootstrap.min.js')!!}
     {!!Html::script('js/vendor/metisMenu.min.js')!!}
     {!!Html::script('js/vendor/sb-admin-2.js')!!}

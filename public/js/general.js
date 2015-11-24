@@ -29,3 +29,14 @@ function Confirm(titulo, pregunta, cancelButtonTxt, okButtonTxt, data, callback)
 
 	confirmModal.modal('show');     
 };
+
+function DiferenciaDias(fechaInicio, fechaFin) {
+	var timeDiff = Math.abs(new Date(fechaFin).getTime() - new Date(fechaInicio).getTime());
+	return Math.ceil(timeDiff / (1000 * 3600 * 24));
+}
+
+function Formatear(fecha) {
+  function pad(s) { return (s < 10) ? '0' + s : s; }
+  var d = new Date(fecha);
+  return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
+}

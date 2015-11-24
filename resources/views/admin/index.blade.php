@@ -28,5 +28,4 @@
 		}
 	</script>
 	{!!Html::script('js/reservas.js')!!}
-	{!!Html::script('http://code.jquery.com/ui/1.11.4/jquery-ui.js')!!}
 @endsection

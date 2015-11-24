@@ -1,3 +1,16 @@
+ul.ui-autocomplete {
+    position: absolute;
+    cursor: default;
+    z-index:9999 !important;
+}
+ul.ui-autocomplete li {
+    color: rgb(85, 85, 85);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 0 2px 1px;
+}
+
 #reservas {
     font: 16px/20px Antic, Helvetica, sans-serif;
     position: relative;
