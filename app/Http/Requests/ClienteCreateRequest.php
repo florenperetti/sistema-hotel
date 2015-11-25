@@ -24,7 +24,8 @@ class ClienteCreateRequest extends Request
     public function rules()
     {
         return [
-            'nombre' => 'required|min:3'
+            'nombre' => 'required|min:3',
+            'apellido' => 'required|min:3'
         ];
     }
 }

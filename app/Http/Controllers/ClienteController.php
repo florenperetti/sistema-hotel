@@ -40,6 +40,7 @@ class ClienteController extends Controller
         $datos = DB::table('cliente')
                         ->join('provincia', 'cliente.idProvincia', '=', 'provincia.id')
                         ->select([  'cliente.nombre as nombre',
+                                    'cliente.apellido',
                                     'cliente.id',
                                     'cliente.telefono',
                                     'cliente.direccion',
@@ -116,8 +117,9 @@ class ClienteController extends Controller
         $result = [];
 
         foreach ($clientes as $key => $cli) {
-            if(strpos(Str::lower($cli['nombre']), $cliente) !== false){
-                $result[] = [ "value" => $cli['nombre'], "label" => $cli['nombre'], "id" => $cli['id'] ];
+            if(strpos(Str::lower($cli['nombre']), $cliente) !== false || strpos(Str::lower($cli['apellido']), $cliente) !== false ){
+                $nombreCompleto = $cli['nombre']." ".$cli['apellido'];
+                $result[] = [ "value" => $nombreCompleto, "label" => $nombreCompleto, "id" => $cli['id'] ];
             }
         }
         

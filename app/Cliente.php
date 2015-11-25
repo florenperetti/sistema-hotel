@@ -10,7 +10,7 @@ class Cliente extends Model
 	use SoftDeletes;
     protected $table = "cliente";
 	protected $dates = ['deleted_at'];
-    protected $fillable = array('nombre','telefono','direccion', 'localidad','idProvincia','email');
+    protected $fillable = array('nombre','apellido','telefono','direccion', 'localidad','idProvincia','email');
 
     public function provincia() {
     	return $this->hasOne('Hotel\Provincia', 'id', 'idProvincia');

@@ -8,7 +8,7 @@ function Cargar() {
 	$('#datos').empty();
 	$.get(url, function(res) {
 		$(JSON.parse(res)).each(function(key, valor){
-			datos.append("<tr id='cliente-"+valor.id+"'><td>"+valor.nombre+"</td><td>"+valor.telefono+"</td><td>"+valor.direccion+"</td><td>"+valor.localidad+"</td><td>"+valor.provincia+"</td><td>"+valor.email+"</td><td><button class='btn btn-primary' value='"+ valor.id +"' OnClick='Mostrar(this);'>Editar</button><button class='btn btn-danger' value='"+ valor.id +"' OnClick='Eliminar(this);'>Eliminar</button></td><tr>");
+			datos.append("<tr id='cliente-"+valor.id+"'><td>"+valor.nombre+"</td><td>"+valor.apellido+"</td><td>"+valor.telefono+"</td><td>"+valor.direccion+"</td><td>"+valor.localidad+"</td><td>"+valor.provincia+"</td><td>"+valor.email+"</td><td><button class='btn btn-primary' value='"+ valor.id +"' OnClick='Mostrar(this);'>Editar</button><button class='btn btn-danger' value='"+ valor.id +"' OnClick='Eliminar(this);'>Eliminar</button></td><tr>");
 		});
 	});
 
@@ -44,6 +44,7 @@ function Mostrar(btn){
 		$('#myModal').modal('toggle');
 		cliente = JSON.parse(res);
 		$('#nombre').val(cliente.nombre);
+		$('#apellido').val(cliente.apellido);
 		$("#telefono").val(cliente.telefono);
 		$("#direccion").val(cliente.direccion);
 		$("#localidad").val(cliente.localidad);
@@ -60,6 +61,7 @@ $('#actualizar').click(function(e){
 	var cliente = {};
 	cliente.id = id;
 	cliente.nombre = $("#nombre").val();
+	cliente.apellido = $("#apellido").val();
 	cliente.telefono = $("#telefono").val();
 	cliente.direccion = $("#direccion").val();
 	cliente.localidad = $("#localidad").val();
@@ -80,7 +82,11 @@ $('#actualizar').click(function(e){
 			Exito('Cliente actualizado correctamente.');
 		},
 		error: function(error) {
-			error.responseJSON.nombre != undefined ? Error(error.responseJSON.nombre) : Error('Ha ocurrido un error.');
+			var mensaje = '';
+			if (msj.responseJSON.nombre != null) mensaje += msj.responseJSON.nombre +"<br/>";
+			if (msj.responseJSON.apellido != null) mensaje += msj.responseJSON.apellido +"<br/>";
+			if (mensaje == '') mensaje += "Ha ocurrido un error al tratar de crear al cliente.";
+			Error(mensaje);
 		}
 	});
 });

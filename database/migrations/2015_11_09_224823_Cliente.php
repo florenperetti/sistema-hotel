@@ -14,7 +14,8 @@ class Cliente extends Migration
     {
         Schema::create('cliente', function(Blueprint $table){
             $table->increments('id');
-            $table->string('nombre', 45)->default('Desconocido');
+            $table->string('nombre', 45)->default('Desconocido')->nullable();
+            $table->string('apellido', 45)->default('Desconocido');
             $table->string('telefono', 20)->nullable();
             $table->string('direccion', 45)->nullable();
             $table->string('localidad', 45)->nullable();

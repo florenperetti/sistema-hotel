@@ -4,6 +4,9 @@
 	
 	{!!Form::label('nombre', 'Nombre: ')!!}
 	{!!Form::text('nombre', null, $attributes = ['id'=>'nombre', 'class'=>'form-control', 'placeholder'=>'Ingresa el nombre del cliente.'])!!}
+	
+	{!!Form::label('apellido', 'Apellido: ')!!}
+	{!!Form::text('apellido', null, $attributes = ['id'=>'apellido', 'class'=>'form-control', 'placeholder'=>'Ingresa el apellido del cliente.'])!!}
 
 	{!!Form::label('telefono', 'Teléfono: ')!!}
 	{!!Form::text('telefono', null, $attributes = ['id'=>'telefono', 'class'=>'form-control', 'placeholder'=>'Ingresa el teléfono del cliente.'])!!}

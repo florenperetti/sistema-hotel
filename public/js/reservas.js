@@ -27,7 +27,7 @@ $(document).ready(function() {
     });
 });
 
-function Pintar(hab, ingreso, egreso, cliente, idReserva) {
+function Pintar(hab, ingreso, egreso, cliente, idReserva, estado) {
 	ingreso = new Date(ingreso);
 	egreso = new Date(egreso);
 
@@ -60,6 +60,8 @@ function Pintar(hab, ingreso, egreso, cliente, idReserva) {
 		cliente = "*";
 	}
 
+	clase += " " + estado.toLowerCase();
+
 	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
 												 .filter('[data-mes="'+mesIng+'"]');
 	var divNuevo = $('<div id="'+idReserva+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
@@ -78,7 +80,6 @@ function MostrarDetallesReserva() {
 		dataType: 'json',
 		data: this.id,
 		success: function(data) {
-			console.log(data);
 			var fechaIngreso = Formatear(data.fechaIngreso);
 			var fechaEgreso = Formatear(data.fechaEgreso);
 			var cuerpo = $("#myModal-info").find("div.modal-body").html("");
@@ -86,11 +87,14 @@ function MostrarDetallesReserva() {
 			hab = data.numeroHabitacion != 'Depto.' ? 'Hab:<br/>' + data.numeroHabitacion : 'Depto.' ;
 			cuerpo.append("<div class='info-hab'>" + hab + "</div>");
 			cuerpo.append("<p><b>Estado de la reserva:</b> " + data.estado + "</p>");
-			cuerpo.append("<p><b>In/Out:</b> de " + fechaIngreso + " al " + fechaEgreso + "</i> (" + DiferenciaDias(data.fechaIngreso, data.fechaEgreso) + " noches)</p>");
-			cuerpo.append("<p><b>Pax:</b> " + data.pax + " " + data.tipoHabitacion + "</p>");
+			cuerpo.append("<p><b>Habitación:</b> " + data.pax + " " + data.tipoHabitacion + "</p>");
+			cuerpo.append("<p><b>Entrada:</b> " + fechaIngreso + "</p>");
+			cuerpo.append("<p><b>Salida:</b> " + fechaEgreso + "</p>");
+			cuerpo.append("<p><b>Noches:</b> " + DiferenciaDias(data.fechaIngreso, data.fechaEgreso) + "</p>");
 			if (data.detalle) cuerpo.append("<p>Detalles:</p><p>" + data.detalle + "</p>");
 			$("#myModal-info").modal('toggle');
-			$("#myModal-info #tituloReserva").html("Reserva de "+data.nombre);
+			$(".modal-header").addClass(data.estado.toLowerCase());
+			$("#myModal-info #tituloReserva").html("Reserva de "+data.nombre+" "+data.apellido);
 	    },
 		error: function (error) {
 			Error("Ha ocurrido un error al cargar la reserva.");
@@ -143,7 +147,7 @@ function Renderizar() {
 	});
 
 	$.each(reservas, function (indice, valor) {
-		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.nombre, valor.id);
+		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.apellido, valor.id, valor.estado);
 	});
 }
 
@@ -194,7 +198,7 @@ $("#crear").click(function(e){
 		success: function(data) {
 			$("#myModal").modal('toggle');
 	        Exito('Reserva creada correctamente.');
-	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, data.nombre, data.id);
+	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, data.nombre + " " + data.apellido, data.id, data.estado);
 	        Limpiar();
 	    },
 		error: function (error) {

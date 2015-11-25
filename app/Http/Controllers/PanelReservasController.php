@@ -39,6 +39,7 @@ class PanelReservasController extends Controller
                                     'reserva.fechaReserva',
                                     'reserva.id',
                                     'cliente.nombre',
+                                    'cliente.apellido',
                                     'cliente.id as idCliente',
                                     'estadoReserva.id as idEstado',
                                     'estadoReserva.estado',

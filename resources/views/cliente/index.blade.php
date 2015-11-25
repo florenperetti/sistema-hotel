@@ -8,6 +8,7 @@
 	<table class="table">
 		<thead>
 			<th>Nombre</th>
+			<th>Apellido</th>
 			<th>Teléfono</th>
 			<th>Dirección</th>
 			<th>Localidad</th>

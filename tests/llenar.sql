@@ -55,6 +55,7 @@ INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Deposito');
 INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Transferencia');
 INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Contado');
 
-INSERT INTO `hotel`.`cliente` (`nombre`, `email`) VALUES ('Flor', 'florenperetti@gmail.com');
+INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Flor', 'Peretti', 'florenperetti@gmail.com');
+INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Cosito', 'Wolf', 'angalgoalgo@gmail.com');
 
 INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `detalle`, `fechaReserva`, `fechaIngreso`, `fechaEgreso`, `idHabitacionAsignada`, pax) VALUES ('1', '1', 'Test', '2015-11-25 10:00:00', '2015-12-25 10:00:00', '2015-12-30 10:00:00', '15', 2);

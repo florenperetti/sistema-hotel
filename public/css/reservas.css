@@ -70,35 +70,16 @@ div.dia-hab div.ocupado {
     box-sizing: content-box;
     height: 35px !important;
     position: relative;
-    content: "";
     cursor: pointer;
-    top: auto;
-    right: auto;
-    bottom: auto;
     left: 40px;
     line-height: 37px !important;
     margin: 0px 13px 0px 0px;
     padding: 10px 28px 10px 20px;
-    outline: none;
-    border: none;
-    border-image-source: initial;
-    border-image-slice: initial;
-    border-image-width: initial;
-    border-image-outset: initial;
-    border-image-repeat: initial;
     border-radius: 4px 1px 1px 4px;
     font: 20px/24px Antic, Helvetica, sans-serif;
-    color: rgb(255, 255, 255);
-    text-decoration: none;
+    color: #FFFFFF;
     text-align: center;
     text-transform: uppercase;
-    text-indent: 0px;
-    text-overflow: ellipsis;
-    letter-spacing: normal;
-    white-space: normal;
-    word-spacing: normal;
-    background: rgb(26, 188, 156) !important;
-    box-shadow: rgb(22, 160, 133) -2px 5px 0px 0px, rgb(22, 160, 133) 5px 5px 0px 0px;
 }
 
 div.dia-hab div.ocupado:before {
@@ -112,28 +93,29 @@ div.dia-hab div.ocupado:before {
     cursor: pointer;
     top: 5px;
     left: -10px;
-    bottom: auto;
-    outline: none;
-    border: none;
-    border-image-source: initial;
-    border-image-slice: initial;
-    border-image-width: initial;
-    border-image-outset: initial;
-    border-image-repeat: initial;
     border-radius: 1px 1px 4px;
-    font: medium Arial, Helvetica, sans-serif;
-    color: rgba(255, 255, 255, 0.901961);
-    text-decoration: none;
-    text-align: left;
-    text-indent: 0px;
-    text-overflow: clip;
-    letter-spacing: normal;
-    white-space: normal;
-    word-spacing: normal;
-    background: rgb(26, 188, 156);
-    text-shadow: none;
-    box-shadow: rgb(22, 160, 133) -5px 0 0 0, rgb(22, 160, 133) -5px 0 0 0;
     transform: rotateY(1deg) rotateZ(-45deg);
+}
+
+div.dia-hab div.ocupado.pendiente {
+    color: #252525;
+    background-color: rgb(234, 225, 127) !important;
+    box-shadow: rgb(210, 170, 20) -2px 5px 0px 0px, rgb(210, 170, 20) 5px 5px 0px 0px;
+}
+
+div.dia-hab div.ocupado.pendiente:before {
+    background-color: rgb(234, 225, 127);
+    box-shadow: rgb(210, 170, 20) -5px 0 0 0, rgb(210, 170, 20) -5px 0 0 0;
+}
+
+div.dia-hab div.ocupado.activa {
+    background: rgb(26, 188, 156) !important;
+    box-shadow: rgb(22, 160, 133) -2px 5px 0px 0px, rgb(22, 160, 133) 5px 5px 0px 0px;
+}
+
+div.dia-hab div.ocupado.activa:before {
+    background: rgb(26, 188, 156);
+    box-shadow: rgb(22, 160, 133) -5px 0 0 0, rgb(22, 160, 133) -5px 0 0 0;
 }
 
 div.dia-hab div.ocupado.antes:before {
@@ -166,3 +148,22 @@ div.dia-hab div.ocupado.despues {
     box-shadow: rgba(0, 0, 0, 0.298039) 1px 1px 1px 0;
     text-shadow: rgba(0, 0, 0, 0.2) 1px 1px 1px;
 }
+
+
+/* info */
+.pendiente {
+    background-color: rgb(234, 225, 127);
+}
+
+.activa {
+    background-color: rgb(26, 188, 156);
+    font: 20px/24px Antic, Helvetica, sans-serif;
+    color: #FFFFFF;
+    text-transform: uppercase;
+}
+
+.cancelada {
+    background-color: #FF8C8C;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.5) 35px, rgba(255,255,255,.5) 70px);
+}
+.cancelada h4 { text-shadow: 2px 1px 1px rgba(101, 59, 59, 0.5); }

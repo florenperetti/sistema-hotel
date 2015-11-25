@@ -3,6 +3,7 @@ $("#registro").click(function(e){
 	var cliente = {};
 	var token = $("#token").val();
 	cliente.nombre = $("#nombre").val();
+	cliente.apellido = $("#apellido").val();
 	cliente.telefono = $("#telefono").val();
 	cliente.direccion = $("#direccion").val();
 	cliente.localidad = $("#localidad").val();
@@ -22,7 +23,11 @@ $("#registro").click(function(e){
 	        Exito('Cliente creado correctamente.');
 	    },
 		error: function (msj) {
-			msj.responseJSON.nombre != null ? Error(msj.responseJSON.nombre) : Error("Ha ocurrido un error al tratar de crear al cliente.");
+			var mensaje = '';
+			if (msj.responseJSON.nombre != null) mensaje += msj.responseJSON.nombre +"<br/>";
+			if (msj.responseJSON.apellido != null) mensaje += msj.responseJSON.apellido +"<br/>";
+			if(mensaje == '') mensaje += "Ha ocurrido un error al tratar de crear al cliente.";
+			Error(mensaje);
        }
 	});
 });

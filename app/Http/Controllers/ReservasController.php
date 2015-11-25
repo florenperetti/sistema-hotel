@@ -87,6 +87,7 @@ class ReservasController extends Controller
                                     'reserva.pax',
                                     'reserva.id',
                                     'cliente.nombre',
+                                    'cliente.apellido',
                                     'cliente.id as idCliente',
                                     'estadoReserva.id as idEstado',
                                     'estadoReserva.estado',
