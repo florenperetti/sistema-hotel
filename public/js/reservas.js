@@ -27,9 +27,10 @@ $(document).ready(function() {
     });
 });
 
-function Pintar(hab, ingreso, egreso, cliente, idReserva, estado) {
-	ingreso = new Date(ingreso);
-	egreso = new Date(egreso);
+function Pintar(reserva) {
+	var cliente = reserva.apellido;
+	ingreso = new Date(reserva.fechaIngreso);
+	egreso = new Date(reserva.fechaEgreso);
 
 	var clase = "ocupado";
 	if (ingreso < limiteIzq) { // Si ingresa antes de limite izq
@@ -59,12 +60,11 @@ function Pintar(hab, ingreso, egreso, cliente, idReserva, estado) {
 	if (ancho <= 80) {
 		cliente = "*";
 	}
+	clase += " " + reserva.estado.toLowerCase();
 
-	clase += " " + estado.toLowerCase();
-
-	var d1 = $('div.dia-hab[data-hab="'+hab+'"]').filter('[data-dia="'+diaIng+'"]')
+	var d1 = $('div.dia-hab[data-hab="'+reserva.idHabitacionAsignada+'"]').filter('[data-dia="'+diaIng+'"]')
 												 .filter('[data-mes="'+mesIng+'"]');
-	var divNuevo = $('<div id="'+idReserva+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
+	var divNuevo = $('<div id="'+reserva.id+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
 	d1.append(divNuevo);
 	divNuevo.click(MostrarDetallesReserva);
 }
@@ -92,12 +92,81 @@ function MostrarDetallesReserva() {
 			cuerpo.append("<p><b>Salida:</b> " + fechaEgreso + "</p>");
 			cuerpo.append("<p><b>Noches:</b> " + DiferenciaDias(data.fechaIngreso, data.fechaEgreso) + "</p>");
 			if (data.detalle) cuerpo.append("<p>Detalles:</p><p>" + data.detalle + "</p>");
+			console.log(data);
+			if (data.idSenia) {
+				cuerpo.append("<p><b>Seña:</b> $" + data.monto + " - " + data.tipoSenia + ". " + data.detalleSenia + "</p>");
+			} else {
+				cuerpo.append("<p><b>Seña:</b> <div id='mensaje-sin-seña'>Esta reserva aún no fue señada. <button onclick='Señar();' class='btn btn-primary'>Señar</button></div>" +
+							"<div id='mensaje-señar' style='display:none;'> <form class='form'> " +
+							'<div class="form-group form-inline"> <div class="input-group">' +
+							"<div class='input-group-addon'>$</div>" +
+							'<label class="sr-only" for="monto">Monto</label><input type="text" placeholder="Monto" id="monto" name="monto" class="form-control" required /> </div>' +
+							'<select id="idTipoSenia" class="form-control"></select></div>' +
+							'<div class="form-group"><label class="sr-only" for="detalleSenia"></label><textarea class="form-control" rows="2" name="detalleSenia" placeholder="Observaciones" id="detalleSenia"></textarea></div>' +
+							"<button onclick='GuardarSeña(event, "+data.id+")' class='btn btn-primary'>Guardar</button>" +
+							"</form></div></p>"
+				);
+				CargarTiposSenia();
+				cuerpo.append('<div id="mensaje-resultado-seña"></div>');
+			}
 			$("#myModal-info").modal('toggle');
 			$(".modal-header").addClass(data.estado.toLowerCase());
 			$("#myModal-info #tituloReserva").html("Reserva de "+data.nombre+" "+data.apellido);
 	    },
 		error: function (error) {
 			Error("Ha ocurrido un error al cargar la reserva.");
+		}
+	});
+}
+
+function Señar() {
+	$('#mensaje-sin-seña').hide();
+	$('#mensaje-resultado-seña').hide();
+	$('#mensaje-señar').show();
+}
+
+function GuardarSeña(e, id) {
+	e.preventDefault();
+	var token = $("#token").val();
+	var data = {};
+
+	data.idReserva = id;
+	data.monto = $("#monto").val();
+	data.idTipoSenia = $("#idTipoSenia").val();
+	data.detalle = $("#detalleSenia").val();
+
+	$.ajax({
+		headers: {'X-CSRF-TOKEN': token },
+		url: 'http://localhost:8000/senia',
+		type: 'POST',
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		data: JSON.stringify(data),
+		success: function (data) {
+			$('#mensaje-señar').fadeOut();
+			$('#mensaje-resultado-seña').html('Señado con éxito').fasdeIn();
+		},
+		error: function (error) {
+			console.log(error.responseText);
+		}
+	});
+}
+
+function CargarTiposSenia() {
+	var token = $("#token").val();
+	$.ajax({
+		headers: {'X-CSRF-TOKEN': token },
+		url: 'http://localhost:8000/senia/create',
+		type: 'GET',
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+		success: function (data) {
+			for (var i = 0; i < data.length; i++) {
+				$("#idTipoSenia").append('<option value="' + data[i]['id'] + '">' + data[i]['tipoSenia'] + '</option>');
+			};
+		},
+		error: function (error) {
+			console.log(error.responseText);
 		}
 	});
 }
@@ -146,8 +215,8 @@ function Renderizar() {
 		divHabitaciones.append('</div>');
 	});
 
-	$.each(reservas, function (indice, valor) {
-		Pintar(valor.idHabitacionAsignada, valor.fechaIngreso, valor.fechaEgreso, valor.apellido, valor.id, valor.estado);
+	$.each(reservas, function (indice, reserva) {
+		Pintar(reserva);
 	});
 }
 
@@ -198,7 +267,7 @@ $("#crear").click(function(e){
 		success: function(data) {
 			$("#myModal").modal('toggle');
 	        Exito('Reserva creada correctamente.');
-	        Pintar(reserva.idHabitacionAsignada, reserva.fechaIngreso, reserva.fechaEgreso, data.nombre + " " + data.apellido, data.id, data.estado);
+	        Pintar(reserva);
 	        Limpiar();
 	    },
 		error: function (error) {

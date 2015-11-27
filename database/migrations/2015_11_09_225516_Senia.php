@@ -15,10 +15,10 @@ class Senia extends Migration
     {
         Schema::create('senia', function(Blueprint $table){
             $table->increments('id');
-            $table->integer('idTipoSenia')->unsigned()->default(0);
+            $table->integer('idTipoSenia')->unsigned()->default(1);
             $table->foreign('idTipoSenia')->references('id')->on('tipoSenia');
             $table->datetime('fechaSenia')->default(\Carbon\Carbon::now());
-            $table->decimal('monto',10,2)->default(0.00);
+            $table->decimal('monto',10,2)->default(0);
             $table->string('detalle',45)->nullable();
         });
     }

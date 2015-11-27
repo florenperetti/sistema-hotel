@@ -28,7 +28,7 @@ class Reserva extends Migration
             $table->integer('idHabitacionAsignada')->unsigned()->nullable();
             $table->foreign('idHabitacionAsignada')->references('id')->on('habitacion');
             $table->integer('idSenia')->unsigned()->nullable();
-            $table->foreign('idSenia')->references('id')->on('senia');
+            $table->foreign('idSenia')->references('id')->on('senia')->onDelete('cascade');
         });
     }
 

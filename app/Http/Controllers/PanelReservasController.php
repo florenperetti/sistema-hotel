@@ -38,6 +38,7 @@ class PanelReservasController extends Controller
                                     'reserva.fechaEgreso',
                                     'reserva.fechaReserva',
                                     'reserva.id',
+                                    'reserva.pax',
                                     'cliente.nombre',
                                     'cliente.apellido',
                                     'cliente.id as idCliente',
@@ -46,6 +47,7 @@ class PanelReservasController extends Controller
                                     'reserva.idHabitacionAsignada',
                                     'habitacion.numeroHabitacion'
                                 ])
+                        ->whereraw('estadoReserva.estado NOT LIKE "CANCELADA"')
                         ->whereraw('MONTH(fechaIngreso) = ? or MONTH(fechaIngreso) = ? or MONTH(fechaEgreso) = ?', [11, 12, 11])
                         ->get();
 

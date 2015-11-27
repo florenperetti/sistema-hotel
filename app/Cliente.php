@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Cliente extends Model
 {
 	use SoftDeletes;
-    protected $table = "cliente";
+    protected $table = 'cliente';
 	protected $dates = ['deleted_at'];
     protected $fillable = array('nombre','apellido','telefono','direccion', 'localidad','idProvincia','email');
 

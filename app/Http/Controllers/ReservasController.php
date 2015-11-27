@@ -81,6 +81,8 @@ class ReservasController extends Controller
                         ->join('habitacion', 'reserva.idHabitacionAsignada', '=', 'habitacion.id')
                         ->join('tipoHabitacion', 'tipoHabitacion.id', '=', 'habitacion.idTipoHabitacion')
                         ->join('estadoReserva', 'reserva.idEstado', '=', 'estadoReserva.id')
+                        ->leftjoin('senia', 'reserva.idSenia', '=', 'senia.id')
+                        ->leftjoin('tipoSenia', 'senia.idTipoSenia', '=', 'tipoSenia.id')
                         ->select([  'reserva.fechaIngreso',
                                     'reserva.fechaEgreso',
                                     'reserva.fechaReserva',
@@ -93,7 +95,13 @@ class ReservasController extends Controller
                                     'estadoReserva.estado',
                                     'reserva.idHabitacionAsignada',
                                     'habitacion.numeroHabitacion',
-                                    'tipoHabitacion.tipoHabitacion'
+                                    'tipoHabitacion.tipoHabitacion',
+                                    'reserva.idSenia',
+                                    'senia.monto',
+                                    'senia.detalle as detalleSenia',
+                                    'senia.fechaSenia',
+                                    'senia.idTipoSenia',
+                                    'tipoSenia.tipoSenia'
                                 ])
                         ->where('reserva.id', "=", $id)
                         ->first();

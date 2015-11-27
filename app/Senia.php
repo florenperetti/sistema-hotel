@@ -8,6 +8,7 @@ class Senia extends Model
 {
     protected $table = "senia";
     public $timestamps = false;
+    protected $fillable = array("idTipoSenia", "fechaSenia", "monto", "detalle");
 
     public function tipo() {
     	return $this->hasOne('Hotel\TipoSenia', 'id', 'idTipoSenia');

@@ -20,4 +20,4 @@ Route::get('clientes','ClienteController@listing');
 Route::post('getCliente','ClienteController@getCliente');
 
 Route::resource('reserva','ReservasController');
-
+Route::resource('senia','SeniasController');
