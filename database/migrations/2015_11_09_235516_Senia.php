@@ -15,6 +15,8 @@ class Senia extends Migration
     {
         Schema::create('senia', function(Blueprint $table){
             $table->increments('id');
+            $table->integer('idReserva')->unsigned();
+            $table->foreign('idReserva')->references('id')->on('reserva');
             $table->integer('idTipoSenia')->unsigned()->default(1);
             $table->foreign('idTipoSenia')->references('id')->on('tipoSenia');
             $table->datetime('fechaSenia')->default(\Carbon\Carbon::now());

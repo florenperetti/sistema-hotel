@@ -80,60 +80,76 @@ function MostrarDetallesReserva() {
 		dataType: 'json',
 		data: this.id,
 		success: function(data) {
-			var fechaIngreso = Formatear(data.fechaIngreso);
-			var fechaEgreso = Formatear(data.fechaEgreso);
+			var reserva = data['reserva'];
+			var senias = data['reserva']['senias'];
+			var fechaIngreso = Formatear(reserva.fechaIngreso);
+			var fechaEgreso = Formatear(reserva.fechaEgreso);
 			var cuerpo = $("#myModal-info").find("div.modal-body").html("");
 			var hab = '';
-			hab = data.numeroHabitacion != 'Depto.' ? 'Hab:<br/>' + data.numeroHabitacion : 'Depto.' ;
+			hab = reserva.habitacion.numeroHabitacion != 'Depto.' ? 'Hab:<br/>' + reserva.habitacion.numeroHabitacion : 'Depto.' ;
 			cuerpo.append("<div class='info-hab'>" + hab + "</div>");
-			cuerpo.append("<p><b>Estado de la reserva:</b> " + data.estado + "</p>");
-			cuerpo.append("<p><b>Habitación:</b> " + data.pax + " " + data.tipoHabitacion + "</p>");
+			cuerpo.append("<p><b>Estado de la reserva:</b> " + reserva.estado.estado + "</p>");
+			cuerpo.append("<p><b>Habitación:</b> " + reserva.pax + " " + reserva.habitacion.tipo.tipoHabitacion + "</p>");
 			cuerpo.append("<p><b>Entrada:</b> " + fechaIngreso + "</p>");
 			cuerpo.append("<p><b>Salida:</b> " + fechaEgreso + "</p>");
-			cuerpo.append("<p><b>Noches:</b> " + DiferenciaDias(data.fechaIngreso, data.fechaEgreso) + "</p>");
-			if (data.detalle) cuerpo.append("<p>Detalles:</p><p>" + data.detalle + "</p>");
-			console.log(data);
-			if (data.idSenia) {
-				cuerpo.append("<p><b>Seña:</b> $" + data.monto + " - " + data.tipoSenia + ". " + data.detalleSenia + "</p>");
+			cuerpo.append("<p><b>Noches:</b> " + DiferenciaDias(reserva.fechaIngreso, reserva.fechaEgreso) + "</p>");
+			if (reserva.detalle) cuerpo.append("<p><b>Detalles:</b> " + reserva.detalle + "</p>");
+
+			if (senias.length > 0) {
+
+				cuerpo.append('<b>Señas:</b><table class="table"><thead><th>Monto</th><th>Fecha</th><th>Tipo</th><th>Observaciones</th><th></th></thead><tbody id="señas"></tbody></table>' +
+								'<button onclick="AgregarSeña(this,'+reserva.id+');" class="btn btn-secondary">Agregar seña</button>');
+				var divSenias = $("#señas");
+				for (var i = 0; i < senias.length; i++) {
+					var senia = senias[i];
+					MostrarSeña(divSenias, senia);
+				};
 			} else {
-				cuerpo.append("<p><b>Seña:</b> <div id='mensaje-sin-seña'>Esta reserva aún no fue señada. <button onclick='Señar();' class='btn btn-primary'>Señar</button></div>" +
-							"<div id='mensaje-señar' style='display:none;'> <form class='form'> " +
-							'<div class="form-group form-inline"> <div class="input-group">' +
-							"<div class='input-group-addon'>$</div>" +
-							'<label class="sr-only" for="monto">Monto</label><input type="text" placeholder="Monto" id="monto" name="monto" class="form-control" required /> </div>' +
-							'<select id="idTipoSenia" class="form-control"></select></div>' +
-							'<div class="form-group"><label class="sr-only" for="detalleSenia"></label><textarea class="form-control" rows="2" name="detalleSenia" placeholder="Observaciones" id="detalleSenia"></textarea></div>' +
-							"<button onclick='GuardarSeña(event, "+data.id+")' class='btn btn-primary'>Guardar</button>" +
-							"</form></div></p>"
-				);
-				CargarTiposSenia();
-				cuerpo.append('<div id="mensaje-resultado-seña"></div>');
+
 			}
+
 			$("#myModal-info").modal('toggle');
-			$(".modal-header").addClass(data.estado.toLowerCase());
-			$("#myModal-info #tituloReserva").html("Reserva de "+data.nombre+" "+data.apellido);
+			$(".modal-header").addClass(reserva.estado.estado.toLowerCase());
+			$("#myModal-info #tituloReserva").html("Reserva de "+reserva.cliente.nombre+" "+reserva.cliente.apellido);
 	    },
 		error: function (error) {
+			console.log(error.responseText);
 			Error("Ha ocurrido un error al cargar la reserva.");
 		}
 	});
 }
 
-function Señar() {
-	$('#mensaje-sin-seña').hide();
-	$('#mensaje-resultado-seña').hide();
-	$('#mensaje-señar').show();
+function MostrarSeña(divSenias, senia) {
+	divSenias.append('<tr><td>$' + senia.monto + '</td><td>' + senia.fechaSenia +
+							    		'</td><td>' + senia.tipo.tipoSenia + '</td><td>' + senia.detalle +
+							    		"</td><td><button onclick='EliminarSeña(event,this," + senia.id +
+							    		")' class='btn btn-danger'>X</button></td></tr>");
+}
+
+function AgregarSeña(btn, id) {
+	$(btn).hide();
+	var div = $('<tr><td><div class="form-group monto"><div class="input-group"><div class="input-group-addon">$</div><input type="text" placeholder="Monto" id="monto" name="monto" class="form-control" required /></div></td>' +
+					   '<td><input type="date" id="fechaReserva" name="fechaReserva" class="form-control fechaReserva" value="' + FormatearParaDatepicker(new Date()) + '" /></td>' +
+					   '<td><select id="idTipoSenia" class="form-control"></select></td>' +
+					   '<td><textarea class="form-control" rows="2" name="detalleSenia" id="detalleSenia"></textarea></td>' +
+					   "<td><button onclick='GuardarSeña(event,"+id+")' class='btn btn-primary'>V</button></td></tr>");
+	CargarTiposSenia();
+	div.hide();
+	$("#señas").append(div);
+	$("#señas tr:last").show('slow');
 }
 
 function GuardarSeña(e, id) {
 	e.preventDefault();
 	var token = $("#token").val();
 	var data = {};
-
+	console.log('id ' + id);
 	data.idReserva = id;
 	data.monto = $("#monto").val();
 	data.idTipoSenia = $("#idTipoSenia").val();
 	data.detalle = $("#detalleSenia").val();
+	data.fechaReserva = $("#fechaReserva").val() + ' 10:00:00';
+	var tipoSenia = $("#idTipoSenia").find(":selected").text();
 
 	$.ajax({
 		headers: {'X-CSRF-TOKEN': token },
@@ -142,9 +158,30 @@ function GuardarSeña(e, id) {
 		contentType: "application/json; charset=utf-8",
 		dataType: 'json',
 		data: JSON.stringify(data),
+		success: function (datos) {
+			data.tipo = {};
+			data.tipo.tipoSenia = tipoSenia;
+			var divSenia = $("#señas tr:last").hide().remove();
+			MostrarSeña($("#señas"), data);
+		},
+		error: function (error) {
+			console.log(error.responseText);
+		}
+	});
+}
+
+function CargarSenias(idReserva) {
+	var token = $("#token").val();
+	$.ajax({
+		headers: {'X-CSRF-TOKEN': token },
+		url: 'http://localhost:8000/senia/',
+		type: 'GET',
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
 		success: function (data) {
-			$('#mensaje-señar').fadeOut();
-			$('#mensaje-resultado-seña').html('Señado con éxito').fasdeIn();
+			for (var i = 0; i < data.length; i++) {
+				$("#idTipoSenia").append('<option value="' + data[i]['id'] + '">' + data[i]['tipoSenia'] + '</option>');
+			};
 		},
 		error: function (error) {
 			console.log(error.responseText);
@@ -169,6 +206,28 @@ function CargarTiposSenia() {
 			console.log(error.responseText);
 		}
 	});
+}
+
+function EliminarSeña(e, btn, id) {
+	e.preventDefault();
+	var token = $("#token").val();
+	var url = 'http://localhost:8000/senia/'+id+'';
+
+	$.ajax({
+		url: url,
+		headers: { 'X-CSRF-TOKEN': token },
+		type: 'DELETE',
+		success: function(data, textStatus, xhr) {
+			Exito('Seña eliminada correctamente.');
+			$(btn).parent().parent().hide('slow');
+		},
+		error: function(data, textStatus, xhr) {
+			console.log(data.responseText);
+			Error('Ha ocurrido un error al tratar de eliminar al cliente.');
+		}
+	});
+
+	
 }
 
 function Renderizar() {

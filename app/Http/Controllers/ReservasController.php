@@ -13,6 +13,7 @@ use Hotel\Reserva;
 use Hotel\Cliente;
 use Hotel\Habitacion;
 use Hotel\TipoHabitacion;
+use Hotel\Senia;
 use DB;
 
 class ReservasController extends Controller
@@ -76,37 +77,14 @@ class ReservasController extends Controller
      */
     public function show($id)
     {
-        $reserva = DB::table('reserva')
-                        ->join('cliente', 'reserva.idCliente', '=', 'cliente.id')
-                        ->join('habitacion', 'reserva.idHabitacionAsignada', '=', 'habitacion.id')
-                        ->join('tipoHabitacion', 'tipoHabitacion.id', '=', 'habitacion.idTipoHabitacion')
-                        ->join('estadoReserva', 'reserva.idEstado', '=', 'estadoReserva.id')
-                        ->leftjoin('senia', 'reserva.idSenia', '=', 'senia.id')
-                        ->leftjoin('tipoSenia', 'senia.idTipoSenia', '=', 'tipoSenia.id')
-                        ->select([  'reserva.fechaIngreso',
-                                    'reserva.fechaEgreso',
-                                    'reserva.fechaReserva',
-                                    'reserva.pax',
-                                    'reserva.id',
-                                    'cliente.nombre',
-                                    'cliente.apellido',
-                                    'cliente.id as idCliente',
-                                    'estadoReserva.id as idEstado',
-                                    'estadoReserva.estado',
-                                    'reserva.idHabitacionAsignada',
-                                    'habitacion.numeroHabitacion',
-                                    'tipoHabitacion.tipoHabitacion',
-                                    'reserva.idSenia',
-                                    'senia.monto',
-                                    'senia.detalle as detalleSenia',
-                                    'senia.fechaSenia',
-                                    'senia.idTipoSenia',
-                                    'tipoSenia.tipoSenia'
-                                ])
-                        ->where('reserva.id', "=", $id)
-                        ->first();
+        $reserva = Reserva::with('cliente','cliente')
+                                        ->with('habitacion','habitacion')
+                                        ->with('habitacion.tipo','habitacion.tipo')
+                                        ->with('estado','estado')
+                                        ->with('senias', 'senias')
+                                        ->with('senias.tipo', 'senias.tipo')->find($id);
 
-        return json_encode($reserva);
+        return json_encode([ "reserva" => $reserva]);
     }
 
     /**

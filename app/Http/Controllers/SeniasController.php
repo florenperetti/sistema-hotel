@@ -43,9 +43,7 @@ class SeniasController extends Controller
     {
         if($request->ajax()) {
             $senia = Senia::create($request->all());
-            $reserva = Reserva::find($request->idReserva);
-            $reserva->idSenia = $senia->id;
-            $reserva->save();
+            $senia->save();
             return response()->json([
                 "mensaje" => "creado"
             ]);
@@ -75,6 +73,17 @@ class SeniasController extends Controller
     }
 
     /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function listar($idReserva)
+    {
+        //
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -94,6 +103,9 @@ class SeniasController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Senia::find($id)->delete();
+        return response()->json([
+            "mensaje" => "eliminado"
+        ]);
     }
 }

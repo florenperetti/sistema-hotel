@@ -3,6 +3,7 @@
 @section('contenido')
 @include('reserva.modal', $estados)
 @include('reserva.modal-info')
+@include('senia.modal')
 @include('alerts.exito')
 @include('alerts.error')
 	{!!Form::open()!!}	
