@@ -35,6 +35,17 @@ class ClienteController extends Controller
         return view('cliente.index', compact('provincias'));
     }
 
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function papelera()
+    {
+        $provincias = DB::table('provincia')->lists('nombre', 'id');
+        return view('cliente.papelera', compact('provincias'));
+    }
+
     public function listing()
     {
         $datos = DB::table('cliente')
@@ -105,10 +116,10 @@ class ClienteController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Trae los clientes para el autocomplete.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return Array
      */
     public function getCliente(Request $request)
     {
@@ -127,6 +138,36 @@ class ClienteController extends Controller
     }
 
     /**
+     * Trae los clientes eliminados para la papelera.
+     *
+     * @param  Request  $request
+     * @return Array
+     */
+    public function getClientesEliminados(Request $request)
+    {
+        $clientes = DB::table('cliente')
+                        ->join('provincia', 'cliente.idProvincia', '=', 'provincia.id')
+                        ->select([  'cliente.nombre as nombre',
+                                    'cliente.apellido',
+                                    'cliente.id',
+                                    'cliente.telefono',
+                                    'cliente.direccion',
+                                    'cliente.localidad',
+                                    'cliente.email',
+                                    'provincia.nombre as provincia',
+                                    'provincia.id as idProvincia'
+                                ])
+                        ->whereraw('cliente.deleted_at IS NOT NULL')
+                        ->get();
+
+        $test = Cliente::whereraw('deleted_at IS NOT NULL')->get();
+
+        return json_encode($clientes);
+    }
+
+
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -139,6 +180,20 @@ class ClienteController extends Controller
         $cliente->fill($request->all());
         $cliente->save();
         return $request->all();
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function restaurar($id)
+    {
+        $cliente = Cliente::withTrashed()->find($id)->restore();
+        return response()->json([
+            "mensaje" => $cliente
+        ]);
     }
 
     /**

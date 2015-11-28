@@ -15,9 +15,12 @@ Route::get('/', 'FrontController@index');
 Route::get('ayuda', 'FrontController@ayuda');
 Route::get('admin', 'PanelReservasController@index');
 
-Route::resource('cliente','ClienteController');
 Route::get('clientes','ClienteController@listing');
+Route::resource('cliente','ClienteController');
 Route::post('getCliente','ClienteController@getCliente');
+Route::get('clientes/papelera','ClienteController@papelera');
+Route::get('clientes/eliminados','ClienteController@getClientesEliminados');
+Route::post('cliente/{id}/restaurar','ClienteController@restaurar');
 
 Route::resource('reserva','ReservasController');
 Route::resource('senia','SeniasController');

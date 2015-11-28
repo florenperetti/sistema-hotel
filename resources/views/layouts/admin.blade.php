@@ -61,6 +61,9 @@
                                 <li>
                                     <a href="/cliente"><i class='fa fa-list-ol fa-fw'></i> Clientes</a>
                                 </li>
+                                <li>
+                                    <a href="/clientes/papelera"><i class='fa fa-list-ol fa-fw'></i> Papelera</a>
+                                </li>
                             </ul>
                         </li>
                         <li>
@@ -105,7 +108,6 @@
     {!!Html::script('js/vendor/metisMenu.min.js')!!}
     {!!Html::script('js/vendor/sb-admin-2.js')!!}
     {!!Html::script('js/general.js')!!}
-    
     @section('scripts')
     @show
 

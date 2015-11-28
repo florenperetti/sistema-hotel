@@ -90,4 +90,3 @@ $('#actualizar').click(function(e){
 		}
 	});
 });
-
