@@ -19,7 +19,7 @@ class Senia extends Migration
             $table->foreign('idReserva')->references('id')->on('reserva');
             $table->integer('idTipoSenia')->unsigned()->default(1);
             $table->foreign('idTipoSenia')->references('id')->on('tipoSenia');
-            $table->datetime('fechaSenia')->default(\Carbon\Carbon::now());
+            $table->date('fechaSenia')->default(\Carbon\Carbon::today());
             $table->decimal('monto',10,2)->default(0);
             $table->string('detalle',45)->nullable();
         });
