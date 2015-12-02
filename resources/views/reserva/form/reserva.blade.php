@@ -15,7 +15,7 @@
 	{!!Form::select('idEstado', $estados, null, array('class' => 'form-control'))!!}
 
 	{!!Form::label('pax', 'Cantidad de personas:')!!}
-	{!!Form::number('pax', null, $attributes = ['id'=>'pax', 'class'=>'form-control', 'placeholder'=>'Ingrese la cantidad de personas que se alojarán.', 'min'=>1, 'max'=>8])!!}
+	{!!Form::number('pax', 2, $attributes = ['id'=>'pax', 'class'=>'form-control', 'placeholder'=>'Ingrese la cantidad de personas que se alojarán.', 'min'=>1, 'max'=>8])!!}
 
 	{!!Form::label('idTipoHabitacion', 'Tipo de habitación:')!!}
 	{!!Form::select('idTipoHabitacion', $tipo, null, array('class' => 'form-control'))!!}

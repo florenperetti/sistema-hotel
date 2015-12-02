@@ -1,6 +1,7 @@
 INSERT INTO `hotel`.`estadoreserva` (`estado`) VALUES ('PENDIENTE');
 INSERT INTO `hotel`.`estadoreserva` (`estado`) VALUES ('ACTIVA');
 INSERT INTO `hotel`.`estadoreserva` (`estado`) VALUES ('CANCELADA');
+INSERT INTO `hotel`.`estadoreserva` (`estado`) VALUES ('TERMINADA');
 
 INSERT INTO `hotel`.`tipohabitacion` (`tipoHabitacion`) VALUES ('MAT');
 INSERT INTO `hotel`.`tipohabitacion` (`tipoHabitacion`) VALUES ('IND');
@@ -55,7 +56,11 @@ INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Deposito');
 INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Transferencia');
 INSERT INTO `hotel`.`tiposenia` (`tipoSenia`) VALUES ('Contado');
 
-INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Flor', 'Peretti', 'florenperetti@gmail.com');
-INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Cosito', 'Wolf', 'angalgoalgo@gmail.com');
 
-INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `detalle`, `fechaReserva`, `fechaIngreso`, `fechaEgreso`, `idHabitacionAsignada`, `pax`) VALUES ('1', '1', 'Test', '2015-11-25 10:00:00', '2015-12-25 10:00:00', '2015-12-30 10:00:00', '15', '2');
+INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Jessica', 'Zabala', 'jessi-zabala@hotmail.com');
+INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Ana Lucia', 'Lovrincevich', 'al.lovrin@gmail.com');
+INSERT INTO `hotel`.`cliente` (`nombre`, `apellido`, `email`) VALUES ('Flor', 'Peretti', 'florenperetti@gmail.com');
+
+INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `fechaReserva`, `fechaIngreso`, `fechaEgreso`, `idHabitacionAsignada`, `pax`, `idTipoHabitacion`) VALUES ('1', '1', '2015-01-12 10:00:00', '2015-01-22 10:00:00', '2015-01-25 09:59:59', '2', '1');
+INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `fechaReserva`, `fechaIngreso`, `fechaEgreso`, `idHabitacionAsignada`, `pax`, `idTipoHabitacion`) VALUES ('2', '2', '2015-01-12 10:00:00', '2015-01-07 10:00:00', '2015-01-12 09:59:59', '2', '1');
+INSERT INTO `hotel`.`reserva` (`idEstado`, `idCliente`, `detalle`, `fechaReserva`, `fechaIngreso`, `fechaEgreso`, `idHabitacionAsignada`, `pax`, `idTipoHabitacion`) VALUES ('2', '3', 'Test', '2015-11-25 10:00:00', '2015-12-25 10:00:00', '2015-12-30 10:00:00', '15', '2');

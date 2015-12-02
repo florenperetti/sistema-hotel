@@ -88,28 +88,29 @@ function MostrarDetallesReserva() {
 			var hab = '';
 			hab = reserva.habitacion.numeroHabitacion != 'Depto.' ? 'Hab:<br/>' + reserva.habitacion.numeroHabitacion : 'Depto.' ;
 			cuerpo.append("<div class='info-hab'>" + hab + "</div>");
+			cuerpo.append("<p><small><i>Reserva realizada el día " + Formatear(reserva.fechaReserva) + "</i></small></p>");
 			cuerpo.append("<p><b>Estado de la reserva:</b> " + reserva.estado.estado + "</p>");
 			cuerpo.append("<p><b>Habitación:</b> " + reserva.pax + " " + reserva.habitacion.tipo.tipoHabitacion + "</p>");
 			cuerpo.append("<p><b>Entrada:</b> " + fechaIngreso + "</p>");
 			cuerpo.append("<p><b>Salida:</b> " + fechaEgreso + "</p>");
 			cuerpo.append("<p><b>Noches:</b> " + DiferenciaDias(reserva.fechaIngreso, reserva.fechaEgreso) + "</p>");
 			if (reserva.detalle) cuerpo.append("<p><b>Detalles:</b> " + reserva.detalle + "</p>");
-
+			cuerpo.append('<p><b>Señas:</b></p><table class="table"><thead><th>Monto</th><th>Fecha</th><th>Tipo</th><th>Observaciones</th><th></th></thead><tbody id="señas"></tbody></table>');
+			var divSenias = $("tbody#señas");
+			divSenias.parent().hide();
 			if (senias.length > 0) {
-
-				cuerpo.append('<b>Señas:</b><table class="table"><thead><th>Monto</th><th>Fecha</th><th>Tipo</th><th>Observaciones</th><th></th></thead><tbody id="señas"></tbody></table>' +
-								'<button onclick="AgregarSeña(this,'+reserva.id+');" class="btn btn-secondary">Agregar seña</button>');
-				var divSenias = $("#señas");
+				divSenias.parent().show();
+				cuerpo.append('<button onclick="AgregarSeña(this,'+reserva.id+');" class="btn btn-secondary">Agregar seña</button>');
 				for (var i = 0; i < senias.length; i++) {
 					var senia = senias[i];
 					MostrarSeña(divSenias, senia);
 				};
 			} else {
-
+				cuerpo.append('<button onclick="AgregarSeña(this,'+reserva.id+');" class="btn btn-secondary">Agregar seña</button>');
 			}
 
 			$("#myModal-info").modal('toggle');
-			$(".modal-header").addClass(reserva.estado.estado.toLowerCase());
+			$(".modal-header").attr('class', 'modal-header').addClass(reserva.estado.estado.toLowerCase());
 			$("#myModal-info #tituloReserva").html("Reserva de "+reserva.cliente.nombre+" "+reserva.cliente.apellido);
 	    },
 		error: function (error) {
@@ -120,7 +121,7 @@ function MostrarDetallesReserva() {
 }
 
 function MostrarSeña(divSenias, senia) {
-	divSenias.append('<tr><td>$' + senia.monto + '</td><td>' + senia.fechaSenia +
+	divSenias.append('<tr><td>$' + senia.monto + '</td><td>' + Formatear(senia.fechaSenia) +
 							    		'</td><td>' + senia.tipo.tipoSenia + '</td><td>' + senia.detalle +
 							    		"</td><td><button onclick='EliminarSeña(event,this," + senia.id +
 							    		")' class='btn btn-danger'>X</button></td></tr>");
@@ -128,8 +129,9 @@ function MostrarSeña(divSenias, senia) {
 
 function AgregarSeña(btn, id) {
 	$(btn).hide();
+	$("tbody#señas").parent().show();
 	var div = $('<tr><td><div class="form-group monto"><div class="input-group"><div class="input-group-addon">$</div><input type="text" placeholder="Monto" id="monto" name="monto" class="form-control" required /></div></td>' +
-					   '<td><input type="date" id="fechaReserva" name="fechaReserva" class="form-control fechaReserva" value="' + FormatearParaDatepicker(new Date()) + '" /></td>' +
+					   '<td><input type="text" id="datepicker" name="fechaReserva" class="form-control fechaReserva" value="' + Formatear(new Date()) + '" /></td>' +
 					   '<td><select id="idTipoSenia" class="form-control"></select></td>' +
 					   '<td><textarea class="form-control" rows="2" name="detalleSenia" id="detalleSenia"></textarea></td>' +
 					   "<td><button onclick='GuardarSeña(event,"+id+")' class='btn btn-primary'>V</button></td></tr>");
@@ -137,19 +139,20 @@ function AgregarSeña(btn, id) {
 	div.hide();
 	$("#señas").append(div);
 	$("#señas tr:last").show('slow');
+	$("#datepicker").datepicker({dateFormat: "dd/mm/yy"});
 }
 
 function GuardarSeña(e, id) {
 	e.preventDefault();
 	var token = $("#token").val();
 	var data = {};
-	console.log('id ' + id);
 	data.idReserva = id;
 	data.monto = $("#monto").val();
 	data.idTipoSenia = $("#idTipoSenia").val();
 	data.detalle = $("#detalleSenia").val();
-	data.fechaReserva = $("#fechaReserva").val() + ' 10:00:00';
 	var tipoSenia = $("#idTipoSenia").find(":selected").text();
+	var d = new Date($("#datepicker").val());
+	data.fechaSenia = d.toYMD();
 
 	$.ajax({
 		headers: {'X-CSRF-TOKEN': token },
@@ -219,7 +222,7 @@ function EliminarSeña(e, btn, id) {
 		type: 'DELETE',
 		success: function(data, textStatus, xhr) {
 			Exito('Seña eliminada correctamente.');
-			$(btn).parent().parent().hide('slow');
+			$(btn).parent().parent().hide('slow').remove();
 		},
 		error: function(data, textStatus, xhr) {
 			console.log(data.responseText);

@@ -41,8 +41,30 @@ function Formatear(fecha) {
   return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
 }
 
-function FormatearParaDatepicker(fecha) {
-  function pad(s) { return (s < 10) ? '0' + s : s; }
-  var d = new Date(fecha);
-  return [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-');
+function DatepickerAMySQL(fecha) {
+	var year, month, day;
+
+	var arr = fecha.split("/");
+
+	day = arr[0];
+	month = arr[1]-1;
+	year = arr[2];
+
+	return new Date(year,month,day).toYMD();
+}
+
+Date.prototype.toYMD = Date_toYMD;
+
+function Date_toYMD() {
+    var year, month, day;
+    year = String(this.getFullYear());
+    month = String(this.getMonth() + 1);
+    if (month.length == 1) {
+        month = "0" + month;
+    }
+    day = String(this.getDate());
+    if (day.length == 1) {
+        day = "0" + day;
+    }
+    return year + "-" + month + "-" + day;
 }
