@@ -11,7 +11,7 @@
     {!!Html::style('css/metisMenu.min.css')!!}
     {!!Html::style('css/sb-admin-2.css')!!}
     {!!Html::style('css/font-awesome.min.css')!!}
-    {!!Html::style('css/reservas.css')!!}
+    {!!Html::style('css/panelreservas.css')!!}
     {!!Html::style('css/jquery-ui.min.css')!!}
     {!!Html::style('css/jquery-ui.structure.min.css')!!}
     {!!Html::style('css/jquery-ui.theme.min.css')!!}

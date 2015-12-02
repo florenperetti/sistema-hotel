@@ -28,5 +28,5 @@
 			return <?php echo json_encode( ["reservas"=>$reservas, "habitaciones"=>$todasHabitaciones]); ?>;
 		}
 	</script>
-	{!!Html::script('js/reservas.js')!!}
+	{!!Html::script('js/panelreservas.js')!!}
 @endsection
