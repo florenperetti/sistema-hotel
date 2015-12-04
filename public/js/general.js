@@ -38,19 +38,13 @@ function DiferenciaDias(fechaInicio, fechaFin) {
 function Formatear(fecha) {
   function pad(s) { return (s < 10) ? '0' + s : s; }
   var d = new Date(fecha);
+
   return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
 }
 
-function DatepickerAMySQL(fecha) {
-	var year, month, day;
-
-	var arr = fecha.split("/");
-
-	day = arr[0];
-	month = arr[1]-1;
-	year = arr[2];
-
-	return new Date(year,month,day).toYMD();
+function DatepickerAMySQL(datepicker) {
+	var d = new Date(datepicker.datepicker('getDate'));
+	return d.toYMD();
 }
 
 Date.prototype.toYMD = Date_toYMD;

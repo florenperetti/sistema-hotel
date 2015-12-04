@@ -21,10 +21,10 @@ class Reserva extends Migration
             $table->integer('pax')->nullable()->default(2);
             $table->integer('idTipoHabitacion')->unsigned()->nullable();
             $table->foreign('idTipoHabitacion')->references('id')->on('tipoHabitacion');
-            $table->string('detalle', 200);
-            $table->datetime('fechaReserva');
-            $table->datetime('fechaIngreso');
-            $table->datetime('fechaEgreso');
+            $table->string('detalle', 200)->nullable();
+            $table->date('fechaReserva');
+            $table->date('fechaIngreso');
+            $table->date('fechaEgreso');
             $table->integer('idHabitacionAsignada')->unsigned()->nullable();
             $table->foreign('idHabitacionAsignada')->references('id')->on('habitacion');
         });

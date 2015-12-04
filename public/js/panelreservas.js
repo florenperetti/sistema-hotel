@@ -8,10 +8,9 @@ $(document).ready(function() {
 	$('#autoCliente').autocomplete({
 	    minLength:2,
 		source: function(request, response) {
-			var token = $("#token").val();
 			$.ajax({
-				url: 'http://localhost:8000/getCliente',
-				headers: {'X-CSRF-TOKEN': token },
+				url: '/getCliente',
+				headers: {'X-CSRF-TOKEN': $("#token").val() },
 				data: { term : $('#autoCliente').val() },
 				dataType: "json",
 				type: 'post',
@@ -25,6 +24,10 @@ $(document).ready(function() {
 	        $('#autoCliente').val(ui.item.value);
 	    }
     });
+
+    $("#fechaIngreso").datepicker({dateFormat: "dd/mm/yy"});
+    $("#fechaEgreso").datepicker({dateFormat: "dd/mm/yy"});
+    $("#fechaReserva").datepicker({dateFormat: "dd/mm/yy"});
 });
 
 function Pintar(reserva) {
@@ -32,7 +35,7 @@ function Pintar(reserva) {
 	ingreso = new Date(reserva.fechaIngreso);
 	egreso = new Date(reserva.fechaEgreso);
 
-	var clase = "ocupado";
+	var clase = "";
 	if (ingreso < limiteIzq) { // Si ingresa antes de limite izq
 		ingreso = new Date(limiteIzq);
 		clase += " antes";
@@ -62,19 +65,16 @@ function Pintar(reserva) {
 	}
 	clase += " " + reserva.estado.toLowerCase();
 
-	var d1 = $('div.dia-hab[data-hab="'+reserva.idHabitacionAsignada+'"]').filter('[data-dia="'+diaIng+'"]')
-												 .filter('[data-mes="'+mesIng+'"]');
-	var divNuevo = $('<div id="'+reserva.id+'" class="'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
+	var d1 = $('div.dia-hab[data-hab="'+reserva.idHabitacionAsignada+'"]').filter('[data-dia="'+diaIng+'"]').filter('[data-mes="'+mesIng+'"]');
+	var divNuevo = $('<div class="ocupado atras'+clase+'" ></div><div id="'+reserva.id+'" class="ocupado'+clase+'" style="width:'+ancho+'px;" >' + cliente + '</div>');//.draggable({ snap: ".dia-hab", grid: [ 40, 40 ] });
 	d1.append(divNuevo);
 	divNuevo.click(MostrarDetallesReserva);
 }
 
 function MostrarDetallesReserva() {
-	var token = $("#token").val();
-	var url = "http://localhost:8000/reserva/"+this.id;
 	$.ajax({
-		url: url,
-		headers: {'X-CSRF-TOKEN': token },
+		url: "/reserva/"+this.id,
+		headers: {'X-CSRF-TOKEN': $("#token").val() },
 		type: 'GET',
 		contentType: "application/json; charset=utf-8",
 		dataType: 'json',
@@ -82,26 +82,32 @@ function MostrarDetallesReserva() {
 		success: function(data) {
 			var reserva = data['reserva'];
 			var senias = data['reserva']['senias'];
-			var fechaIngreso = Formatear(reserva.fechaIngreso);
-			var fechaEgreso = Formatear(reserva.fechaEgreso);
+			var fechaIngreso = reserva.fechaIngreso;
+			var fechaEgreso = reserva.fechaEgreso;
 			var cuerpo = $("#myModal-info").find("div.modal-body").html("");
 			var hab = '';
 			hab = reserva.habitacion.numeroHabitacion != 'Depto.' ? 'Hab:<br/>' + reserva.habitacion.numeroHabitacion : 'Depto.' ;
-			cuerpo.append("<div class='info-hab'>" + hab + "</div>");
-			cuerpo.append("<p><small><i>Reserva realizada el día " + Formatear(reserva.fechaReserva) + "</i></small></p>");
-			cuerpo.append("<p><b>Estado de la reserva:</b> " + reserva.estado.estado + "</p>");
-			cuerpo.append("<p><b>Habitación:</b> " + reserva.pax + " " + reserva.habitacion.tipo.tipoHabitacion + "</p>");
-			cuerpo.append("<p><b>Entrada:</b> " + fechaIngreso + "</p>");
-			cuerpo.append("<p><b>Salida:</b> " + fechaEgreso + "</p>");
-			cuerpo.append("<p><b>Noches:</b> " + DiferenciaDias(reserva.fechaIngreso, reserva.fechaEgreso) + "</p>");
-			if (reserva.detalle) cuerpo.append("<p><b>Detalles:</b> " + reserva.detalle + "</p>");
-			cuerpo.append('<p><b>Señas:</b></p><table class="table"><thead><th>Monto</th><th>Fecha</th><th>Tipo</th><th>Observaciones</th><th></th></thead><tbody id="señas"></tbody></table>');
+			var stringToAppend = "<div class='info-hab'>" + hab + "</div>";
+			stringToAppend += "<p><small><i>Reserva realizada el día " + reserva.fechaReserva + "</i></small></p>";
+			stringToAppend += "<p><b>Estado de la reserva:</b> " + reserva.estado.estado + "</p>";
+			stringToAppend += "<p><b>Habitación:</b> " + reserva.pax + " " + reserva.habitacion.tipo.tipoHabitacion + "</p>";
+			stringToAppend += "<p><b>Entrada:</b> " + fechaIngreso + "</p>";
+			stringToAppend += "<p><b>Salida:</b> " + fechaEgreso + "</p>";
+			stringToAppend += "<p><b>Noches:</b> " + DiferenciaDias(reserva.fechaIngreso, reserva.fechaEgreso) + "</p>";
+			if (reserva.detalle) stringToAppend += "<p><b>Detalles:</b> " + reserva.detalle + "</p>";
+			stringToAppend += '<p><b>Señas:</b></p><table class="table"><thead><th>Monto</th><th>Fecha</th><th>Tipo</th><th>Observaciones</th><th></th></thead><tbody id="señas"></tbody></table>';
+			
+			cuerpo.append(stringToAppend);
+
 			var divSenias = $("tbody#señas");
-			divSenias.parent().hide();
-			if (senias.length > 0) {
-				divSenias.parent().show();
+			var divSeniasParent = divSenias.parent();
+			var seniasLength = senias.length;
+
+			divSeniasParent.hide();
+			if (seniasLength > 0) {
+				divSeniasParent.show();
 				cuerpo.append('<button onclick="AgregarSeña(this,'+reserva.id+');" class="btn btn-secondary">Agregar seña</button>');
-				for (var i = 0; i < senias.length; i++) {
+				for (var i = 0; i < seniasLength; i++) {
 					var senia = senias[i];
 					MostrarSeña(divSenias, senia);
 				};
@@ -114,7 +120,6 @@ function MostrarDetallesReserva() {
 			$("#myModal-info #tituloReserva").html("Reserva de "+reserva.cliente.nombre+" "+reserva.cliente.apellido);
 	    },
 		error: function (error) {
-			console.log(error.responseText);
 			Error("Ha ocurrido un error al cargar la reserva.");
 		}
 	});
@@ -128,6 +133,7 @@ function MostrarSeña(divSenias, senia) {
 }
 
 function AgregarSeña(btn, id) {
+	var divSeñas = $("#señas");
 	$(btn).hide();
 	$("tbody#señas").parent().show();
 	var div = $('<tr><td><div class="form-group monto"><div class="input-group"><div class="input-group-addon">$</div><input type="text" placeholder="Monto" id="monto" name="monto" class="form-control" required /></div></td>' +
@@ -137,25 +143,23 @@ function AgregarSeña(btn, id) {
 					   "<td><button onclick='GuardarSeña(event,"+id+")' class='btn btn-primary'>V</button></td></tr>");
 	CargarTiposSenia();
 	div.hide();
-	$("#señas").append(div);
-	$("#señas tr:last").show('slow');
+	divSeñas.append(div);
+	divSeñas.find("tr:last").show('slow');
 	$("#datepicker").datepicker({dateFormat: "dd/mm/yy"});
 }
 
 function GuardarSeña(e, id) {
 	e.preventDefault();
-	var token = $("#token").val();
 	var data = {};
+	var tipoSenia = $("#idTipoSenia");
 	data.idReserva = id;
+	data.idTipoSenia = tipoSenia.val();
 	data.monto = $("#monto").val();
-	data.idTipoSenia = $("#idTipoSenia").val();
 	data.detalle = $("#detalleSenia").val();
-	var tipoSenia = $("#idTipoSenia").find(":selected").text();
-	var d = new Date($("#datepicker").val());
-	data.fechaSenia = d.toYMD();
-
+	data.fechaSenia = DatepickerAMySQL($("#datepicker"));
+	tipoSenia = tipoSenia.find(":selected").text();
 	$.ajax({
-		headers: {'X-CSRF-TOKEN': token },
+		headers: {'X-CSRF-TOKEN': $("#token").val() },
 		url: 'http://localhost:8000/senia',
 		type: 'POST',
 		contentType: "application/json; charset=utf-8",
@@ -164,73 +168,45 @@ function GuardarSeña(e, id) {
 		success: function (datos) {
 			data.tipo = {};
 			data.tipo.tipoSenia = tipoSenia;
-			var divSenia = $("#señas tr:last").hide().remove();
+			$("#señas tr:last").hide().remove();
 			MostrarSeña($("#señas"), data);
-		},
-		error: function (error) {
-			console.log(error.responseText);
-		}
-	});
-}
-
-function CargarSenias(idReserva) {
-	var token = $("#token").val();
-	$.ajax({
-		headers: {'X-CSRF-TOKEN': token },
-		url: 'http://localhost:8000/senia/',
-		type: 'GET',
-		contentType: "application/json; charset=utf-8",
-		dataType: 'json',
-		success: function (data) {
-			for (var i = 0; i < data.length; i++) {
-				$("#idTipoSenia").append('<option value="' + data[i]['id'] + '">' + data[i]['tipoSenia'] + '</option>');
-			};
-		},
-		error: function (error) {
-			console.log(error.responseText);
 		}
 	});
 }
 
 function CargarTiposSenia() {
-	var token = $("#token").val();
 	$.ajax({
-		headers: {'X-CSRF-TOKEN': token },
+		headers: {'X-CSRF-TOKEN': $("#token").val() },
 		url: 'http://localhost:8000/senia/create',
 		type: 'GET',
 		contentType: "application/json; charset=utf-8",
 		dataType: 'json',
 		success: function (data) {
-			for (var i = 0; i < data.length; i++) {
-				$("#idTipoSenia").append('<option value="' + data[i]['id'] + '">' + data[i]['tipoSenia'] + '</option>');
+			var stringToAppend = '';
+			var dataLength = data.length;
+			for (var i = 0; i < dataLength; i++) {
+				stringToAppend += '<option value="' + data[i]['id'] + '">' + data[i]['tipoSenia'] + '</option>';
 			};
-		},
-		error: function (error) {
-			console.log(error.responseText);
+			$("#idTipoSenia").append(stringToAppend);
 		}
 	});
 }
 
 function EliminarSeña(e, btn, id) {
 	e.preventDefault();
-	var token = $("#token").val();
-	var url = 'http://localhost:8000/senia/'+id+'';
 
 	$.ajax({
-		url: url,
-		headers: { 'X-CSRF-TOKEN': token },
+		url: '/senia/'+id,
+		headers: { 'X-CSRF-TOKEN': $("#token").val() },
 		type: 'DELETE',
 		success: function(data, textStatus, xhr) {
 			Exito('Seña eliminada correctamente.');
 			$(btn).parent().parent().hide('slow').remove();
 		},
 		error: function(data, textStatus, xhr) {
-			console.log(data.responseText);
 			Error('Ha ocurrido un error al tratar de eliminar al cliente.');
 		}
 	});
-
-	
 }
 
 function Renderizar() {
@@ -262,18 +238,28 @@ function Renderizar() {
 
 	// Creo los dias
 	var divDias = $(".dias");
-	for( var dia = 0; dia < dias.length; dia++ ) {
-		dias[dia]["dia"] == diaHoy && dias[dia]["mes"] == mesHoy ? divDias.append("<div class='dia actual'>" + dias[dia]["dia"] + "</div>") : divDias.append("<div class='dia'>" + dias[dia]["dia"] + "</div>");		
+	var stringToAppend = '';
+	var diasLength = dias.length;
+	var dia = 0;
+	for(dia = 0; dia < diasLength; dia++ ) {
+		stringToAppend += dias[dia]["dia"] == diaHoy && dias[dia]["mes"] == mesHoy ? "<div class='dia actual'>" + dias[dia]["dia"] + "</div>" : "<div class='dia'>" + dias[dia]["dia"] + "</div>";
 	}
+	divDias.append(stringToAppend);
 
 	// Creo dias en habs
 	var divHabitaciones = $(".habitaciones");
-	$.each(darJson()["habitaciones"], function (indice, valor) {
+	var diaToAppend = '';
+	var divHab = null;
+	var jsonHabs = darJson()["habitaciones"];
+	$.each(jsonHabs, function (indice, valor) {
+		divHab = null;
 		divHabitaciones.append('<div class="habitacion" data-id-hab="'+ valor.id +'"><div class="num-hab">' + valor.numeroHabitacion + '</div><input name="'+valor.id+'" type="button" value="+" class="btn btn-primary" onclick="modoEdicionHabitacion(this)" ></input>');
-		var divHab = $('div.habitacion[data-id-hab='+valor.id+']');
-		for( var dia = 0; dia < dias.length; dia++ ) {
-			divHab.append('<div id="" class="dia-hab" data-dia="' + dias[dia]["dia"] + '" data-mes="' + (dias[dia]["mes"]+1) + '" data-hab="' + valor.id + '"></div>');
+		divHab = $('div.habitacion[data-id-hab='+valor.id+']');
+		diaToAppend = '';
+		for(dia = 0; dia < diasLength; dia++ ) {
+			diaToAppend += '<div id="" class="dia-hab" data-dia="' + dias[dia]["dia"] + '" data-mes="' + (dias[dia]["mes"]+1) + '" data-hab="' + valor.id + '"></div>';
 		}
+		divHab.append(diaToAppend);
 		divHabitaciones.append('</div>');
 	});
 
@@ -287,16 +273,9 @@ function ModoEdicion(btn) {
 }
 
 function modoEdicionHabitacion(btn) {
-	var habitacion = $(".habitacion");
-
-	var url = 'http://localhost:8000/reserva/'+btn.name+'/edit';
+	$('#myModal').modal('toggle');
 	Limpiar();
 	
-	$.get(url, function(res) {
-		$('#myModal').modal('toggle');
-		reserva = JSON.parse(res);
-	});
-
 	/*
 	habitacion.children().not('div.num-hab').filter('div[data-hab!="'+btn.name+'"]').unbind('click').addClass('deshabilitado');
 	habitacion.children().not('div.num-hab').filter('div[data-hab="'+btn.name+'"]').removeClass('deshabilitado').bind('click', function() {
@@ -308,17 +287,19 @@ $("#crear").click(function(e){
 	e.preventDefault();
 	var reserva = {};
 	var token = $("#token").val();
-	reserva.fechaReserva = $("#fechaReserva").val();
-	reserva.fechaIngreso = $("#fechaIngreso").val() + ' 10:00:00';
-	reserva.fechaEgreso = $("#fechaEgreso").val() + ' 09:59:59';
+	reserva.fechaReserva = DatepickerAMySQL($("#fechaReserva"));
+	reserva.fechaIngreso = DatepickerAMySQL($("#fechaIngreso"));
+	reserva.fechaEgreso = DatepickerAMySQL($("#fechaEgreso"));
 	reserva.idCliente = $("#idCliente").val();
 	reserva.idEstado = $("#idEstado").val();
 	reserva.idHabitacionAsignada = $("#habitacionAsignada").val();
 	reserva.detalle = $("#detalle").val();
 	reserva.idTipoHabitacion = $("#idTipoHabitacion").val();
 	reserva.pax = $("#pax").val();
-	var url = "http://localhost:8000/reserva";
-	
+	var url = "/reserva";
+
+	console.log(new Date($("#fechaIngreso").val()))
+
 	$.ajax({
 		url: url,
 		headers: {'X-CSRF-TOKEN': token },
@@ -327,7 +308,11 @@ $("#crear").click(function(e){
 		dataType: 'json',
 		data: JSON.stringify(reserva),
 		success: function(data) {
+			console.log(data);
 			$("#myModal").modal('toggle');
+			reserva.estado = data.estado;
+			reserva.apellido = data.apellido;
+			reserva.id = data.id;
 	        Exito('Reserva creada correctamente.');
 	        Pintar(reserva);
 	        Limpiar();

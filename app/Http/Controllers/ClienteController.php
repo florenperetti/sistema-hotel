@@ -35,11 +35,6 @@ class ClienteController extends Controller
         return view('cliente.index', compact('provincias'));
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function papelera()
     {
         $provincias = DB::table('provincia')->lists('nombre', 'id');

@@ -3,13 +3,13 @@
 	@include('alerts.error')
 
 	{!!Form::label('fechaReserva', 'Fecha de reserva:')!!}
-	{!!Form::date('fechaReserva', \Carbon\Carbon::now(), $attributes = ['id'=>'fechaReserva', 'class'=>'form-control', 'placeholder'=>'Ingresa la fecha en la que se realizó la reserva.'])!!}
+	{!!Form::text('fechaReserva', \Carbon\Carbon::today()->subDay()->format('d/m/Y'), $attributes = ['id'=>'fechaReserva', 'class'=>'form-control', 'placeholder'=>'Ingresa la fecha en la que se realizó la reserva.'])!!}
 
 	{!!Form::label('fechaIngreso', 'Fecha de ingreso:')!!}
-	{!!Form::date('fechaIngreso', \Carbon\Carbon::now(), $attributes = ['id'=>'fechaIngreso', 'class'=>'form-control', 'placeholder'=>'Ingresa la fecha en la que ingresará el cliente.'])!!}
+	{!!Form::text('fechaIngreso', \Carbon\Carbon::today()->subDay()->format('d/m/Y'), $attributes = ['id'=>'fechaIngreso', 'class'=>'form-control', 'placeholder'=>'Ingresa la fecha en la que ingresará el cliente.'])!!}
 
 	{!!Form::label('fechaEgreso', 'Fecha de egreso:')!!}
-	{!!Form::date('fechaEgreso', \Carbon\Carbon::now(), $attributes = ['id'=>'fechaEgreso', 'class'=>'form-control', 'placeholder'=>'Ingresa la fecha de egreso del cliente.'])!!}
+	{!!Form::text('fechaEgreso', \Carbon\Carbon::today()->subDay()->format('d/m/Y'), $attributes = ['id'=>'fechaEgreso', 'class'=>'form-control', 'placeholder'=>'Ingresa la fecha de egreso del cliente.'])!!}
 	
 	{!!Form::label('idEstado', 'Estado de la reserva:')!!}
 	{!!Form::select('idEstado', $estados, null, array('class' => 'form-control'))!!}

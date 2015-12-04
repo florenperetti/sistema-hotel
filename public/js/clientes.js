@@ -27,7 +27,7 @@ function Eliminar(btn) {
 			type: 'DELETE',
 			cache: false,
 			success: function(data, textStatus, xhr) {
-				Exito('Cliente eliminado correctamente.');
+				Exito('El cliente fue movido a la papelera.');
 				$("#cliente-"+btn.value).fadeOut('400');
 			},
 			error: function(data, textStatus, xhr) {
@@ -67,7 +67,7 @@ $('#actualizar').click(function(e){
 	cliente.localidad = $("#localidad").val();
 	cliente.idProvincia = $("#idProvincia").val();
 	cliente.email = $("#email").val();
-	console.log(cliente);
+
 	var url = "http://localhost:8000/cliente/"+id+"";
 	var token = $("#token").val();
 	$.ajax({
@@ -85,7 +85,7 @@ $('#actualizar').click(function(e){
 			var mensaje = '';
 			if (msj.responseJSON.nombre != null) mensaje += msj.responseJSON.nombre +"<br/>";
 			if (msj.responseJSON.apellido != null) mensaje += msj.responseJSON.apellido +"<br/>";
-			if (mensaje == '') mensaje += "Ha ocurrido un error al tratar de crear al cliente.";
+			if (mensaje == '') mensaje += "Ha ocurrido un error al tratar de actualizar al cliente.";
 			Error(mensaje);
 		}
 	});

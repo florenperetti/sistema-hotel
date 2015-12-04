@@ -4,6 +4,7 @@ namespace Hotel\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Carbon;
 use Illuminate\Validation\Validator;
 use Hotel\Http\Requests;
 use Hotel\Http\Requests\ReservaCreateRequest;
@@ -29,7 +30,8 @@ class ReservasController extends Controller
         $estados = EstadoReserva::lists('estado', 'id');
         $clientes = Cliente::lists('nombre', 'id');
         $habitaciones = Habitacion::lists('numeroHabitacion', 'id');
-        return view('reserva.index')->with('reservas', $reservas)->with('estados', $estados)->with('clientes', $clientes)->with('habitaciones', $habitaciones);
+        $tipo = TipoHabitacion::lists('tipoHabitacion', 'id');
+        return view('reserva.index')->with('reservas', $reservas)->with('estados', $estados)->with('clientes', $clientes)->with('habitaciones', $habitaciones)->with('tipo', $tipo);
     }
 
     /**
@@ -62,9 +64,12 @@ class ReservasController extends Controller
         if($request->ajax()) {
             $reserva = Reserva::create($request->all());
             $cliente = Cliente::find($request->idCliente);
+            $estado = EstadoReserva::find($request->idEstado);
+
             return response()->json([
-                "nombre" => $cliente->nombre,
-                "id" => $reserva->id
+                "apellido" => $cliente->apellido,
+                "id" => $reserva->id,
+                "estado" => $estado->estado
             ]);
         }
     }
@@ -87,6 +92,30 @@ class ReservasController extends Controller
         return json_encode([ "reserva" => $reserva]);
     }
 
+    public function listing()
+    {
+        $datos = DB::table('reserva')
+                        ->leftjoin('cliente', 'reserva.idCliente', '=', 'cliente.id')
+                        ->leftjoin('estadoReserva', 'reserva.idEstado', '=', 'estadoReserva.id')
+                        ->leftjoin('habitacion', 'reserva.idHabitacionAsignada', '=', 'habitacion.id')
+                        ->leftjoin('tipoHabitacion', 'reserva.idTipoHabitacion', '=', 'tipoHabitacion.id')
+                        ->select([  'reserva.id',
+                                    'reserva.fechaIngreso',
+                                    'reserva.fechaEgreso',
+                                    'estadoReserva.estado',
+                                    'habitacion.numeroHabitacion',
+                                    'cliente.id as idCliente',
+                                    'cliente.nombre',
+                                    'cliente.apellido',
+                                    'reserva.pax',
+                                    'reserva.idTipoHabitacion',
+                                    'tipoHabitacion.tipoHabitacion',
+                                    'reserva.fechaReserva'
+                                ])
+                        ->get();
+        return json_encode($datos);
+    }
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -95,7 +124,7 @@ class ReservasController extends Controller
      */
     public function edit($id)
     {
-        $reserva = Reserva::find($id);
+        $reserva = Reserva::with('cliente', 'cliente')->find($id);
         return json_encode($reserva);
     }
 
@@ -110,7 +139,7 @@ class ReservasController extends Controller
     {
         $reserva = Reserva::find($id);
         $reserva->fill($request->all());
-        $cliente->save();
+        $reserva->save();
         return $request->all();
     }
 

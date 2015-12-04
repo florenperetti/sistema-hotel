@@ -70,10 +70,10 @@
                             <a href="#"><i class="fa fa-film fa-fw"></i> Reserva<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="#"><i class='fa fa-plus fa-fw'></i> Agregar</a>
+                                    <a href="/reserva/create"><i class='fa fa-plus fa-fw'></i> Agregar</a>
                                 </li>
                                 <li>
-                                    <a href="#"><i class='fa fa-list-ol fa-fw'></i> Reservas</a>
+                                    <a href="/reserva"><i class='fa fa-list-ol fa-fw'></i> Reservas</a>
                                 </li>
                             </ul>
                         </li>

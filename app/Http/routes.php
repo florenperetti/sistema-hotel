@@ -23,4 +23,6 @@ Route::get('clientes/eliminados','ClienteController@getClientesEliminados');
 Route::post('cliente/{id}/restaurar','ClienteController@restaurar');
 
 Route::resource('reserva','ReservasController');
+Route::get('reservas','ReservasController@listing');
+
 Route::resource('senia','SeniasController');
